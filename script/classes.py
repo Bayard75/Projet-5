@@ -4,4 +4,6 @@ import constants
 import script
 
 class Database():
-    pass
+    
+    def __init__(self,database):
+        pass

@@ -3,7 +3,7 @@
 
 mysql_host = "localhost"
 mysql_user = "root"
-mysql_password=""
+mysql_password="Vongola75"
 mysql_database ="projet5"
 
-cataegories_to_display =["Aliments","viandes","boissons","snacks"]
+cataegories_to_display =["","viandes","boissons","snacks","produits-laitiers","pizzas","petit-dejeuners","epicerie"]
