@@ -1,4 +1,6 @@
-import os, mysql.connector, requests, json, classes, constants
+import os, mysql.connector, requests, json
+import classes
+import constants
 
 mydb = mysql.connector.connect(
     host =constants.mysql_host,
@@ -9,5 +11,5 @@ mydb = mysql.connector.connect(
 
 mycursor= mydb.cursor()
 
-sqlFormula_categories ="INSERT INTO categorie (id,nom) VALUES (%s,%s)"
-
+projet5 = classes.Database(mydb,mycursor)
+projet5.create_category_table
