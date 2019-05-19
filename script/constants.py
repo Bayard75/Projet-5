@@ -6,4 +6,4 @@ mysql_user = "root"
 mysql_password="Vongola75"
 mysql_database ="projet5"
 
-categories_to_display =["Pizzas","viandes","boissons-gazeuses","snacks","produits-laitiers","pizzas","petit-dejeuners","epicerie","boissons-alcoolisees"]
+categories_to_display =[(1,"Pizzas"),(9,"viandes"),(2,"boissons-gazeuses"),(3,"snacks"),(4,"produits-laitiers"),(5,"frommage"),(6,"petit-dejeuners"),(7,"epicerie"),(8,"boissons-alcoolisees")]
