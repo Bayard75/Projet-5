@@ -1,0 +1,6 @@
+CREATE TABLE Category ( 
+id_category SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
+name_category VARCHAR(150) NOT NULL,
+PRIMARY KEY(id_category)
+)
+ENGINE=InnoDB;
