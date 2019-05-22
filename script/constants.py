@@ -6,9 +6,10 @@ mysql_user = "root"
 mysql_password="Vongola75"
 mysql_database ="projet5"
 
-categories_to_display =[(1,"Pizzas"),(9,"viandes"),(2,"boissons-gazeuses"),(3,"snacks"),(4,"produits-laitiers"),(5,"frommage"),(6,"petit-dejeuners"),(7,"epicerie"),(8,"boissons-alcoolisees")]
+categories_to_display =[(None,"Pizzas"),(None,"boissons-gazeuses"),(None,"snacks"),(None,"produits-laitiers"),(None,"frommage"),(None,"petit-dejeuners"),(None,"epicerie"),(None,"boissons-alcoolisees"),(None,"viandes")]
 
-with open(r"files\Categories.sql","r") as file:
+with open(r"files\Category.sql","r") as file:
     Category_table = file.read()
 with open(r"files\Aliment.sql","r") as file:
     Aliment_table =file.read()
+    
