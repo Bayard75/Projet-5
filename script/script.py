@@ -10,5 +10,5 @@ mydb = mysql.connector.connect(
 mycursor= mydb.cursor()
 print(constants.mysql_host)
 projet5 = classes.Database(mydb,mycursor,constants.Category_table,constants.Aliment_table)
-
+print("Tous c'est bien passé.")
 os.system("pause")
