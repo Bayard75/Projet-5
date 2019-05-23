@@ -8,7 +8,9 @@ mydb = mysql.connector.connect(
 )
 
 mycursor= mydb.cursor()
-print(constants.mysql_host)
 projet5 = classes.Database(mydb,mycursor,constants.Category_table,constants.Aliment_table)
+print("Les tables on bien été créees.")
+projet5.insert_values(1,"pizzas")
+print("Les données on été inséré pour les pizzas.")
 print("Tous c'est bien passé.")
 os.system("pause")
