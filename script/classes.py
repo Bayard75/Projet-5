@@ -14,6 +14,7 @@ class Database():
             self.cursor.execute(table2_formula)
         except:
             print("Erreur dans la creation des tables.")
+        
         #Inserting our first values into table1
         sql_category_formula ="INSERT INTO Category(id_category,name_category) VALUES (%s,%s)"
         try :
@@ -22,28 +23,26 @@ class Database():
         except:
             print ("Erreur dans l'insertion des données pour la table Categorie.")
     
-    def insert_values(self,id_category,category_name):
+    def insert_values(self):
         
-        link = "https://fr.openfoodfacts.org/categorie/pizzas.json"
-        response = requests.get(link)
-        category_json = json.loads(response.text)
-        category_array =[]
-        sql_formula_aliment = "INSERT INTO Aliment(barecode,name_aliment,category,store,grade,link) VALUES (%s,%s,%s,%s,%s,%s)" 
-        
-        for i in range(0,19):
-            try:    
-                category_array.append(
-                (category_json["products"][i]["code"]
-                ,category_json["products"][i]["product_name_fr"]
-                ,id_category
-                ,category_json["products"][i]["stores_tags"][0]
-                ,category_json["products"][i]["nutrition_grades_tags"][0]
-                ,category_json["products"][i]["url"]))
-            except KeyError:
-                category_array.append(None)
-            except:
-                print("Un erreur s'est produite pendant la création de l'array des données")
-
-        
-        self.cursor.executemany(sql_formula_aliment,category_array)
-        self.database.commit()
+        id_category = 0
+        i = 1
+        for names in constants.categories_to_display:
+            
+            link = f"https://fr.openfoodfacts.org/categorie/{constants.categories_to_display[id_category][1]}.json"
+            response = requests.get(link)
+            category_json = json.loads(response.text)
+            
+            id_category +=1
+            for products in category_json["products"]:
+                try:  
+                    sql_formula_aliment = f'INSERT INTO Aliment(id_aliment,name_aliment,category,store,grade,link) VALUES ({i},"{products["product_name"]}",{id_category},"{products["stores"]}","{products["nutrition_grades_tags"][0]}","{products["url"]}")'
+                    i +=1
+                    self.cursor.execute(sql_formula_aliment)
+                    self.database.commit()
+                
+                except KeyError:    
+                    sql_key_error = f'INSERT INTO Aliment(id_aliment,name_aliment,category,store,grade,link) VALUES ({i},"{products["product_name"]}",{id_category}," ","{products["nutrition_grades_tags"][0]}","{products["url"]}")'
+                    self.cursor.execute(sql_key_error)
+                    self.database.commit()
+                    i +=1

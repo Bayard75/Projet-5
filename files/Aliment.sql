@@ -1,13 +1,11 @@
-CREATE TABLE Aliment (
-    barecode VARCHAR(15) NOT NULL,
+CREATE TABLE aliment (
+    id_aliment SMALLINT AUTO_INCREMENT NOT NULL,
     name_aliment VARCHAR(150) NOT NULL,
     category SMALLINT UNSIGNED NOT NULL,
-    store VARCHAR(50),
-    grade CHAR(1) NOT NULL,
+    store TEXT,
+    grade TEXT NOT NULL,
     link TEXT,
-    substitut VARCHAR(15)  ,
-    PRIMARY KEY (barecode),
-    CONSTRAINT fk_category FOREIGN KEY(category) REFERENCES Category(id_category),
-    CONSTRAINT fk_subsitut FOREIGN KEY(substitut) REFERENCES Aliment(barecode)
+    PRIMARY KEY (id_aliment),
+    CONSTRAINT fk_category FOREIGN KEY(category) REFERENCES Category(id_category) 
 )
 ENGINE = InnoDB;
