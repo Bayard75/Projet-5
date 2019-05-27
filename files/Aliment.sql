@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS aliment;
-
 CREATE TABLE aliment (
     id_aliment SMALLINT AUTO_INCREMENT NOT NULL,
     name_aliment VARCHAR(150) NOT NULL,
