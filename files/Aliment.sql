@@ -6,6 +6,6 @@ CREATE TABLE aliment (
     grade TEXT NOT NULL,
     link TEXT,
     PRIMARY KEY (id_aliment),
-    CONSTRAINT fk_category FOREIGN KEY(category) REFERENCES Category(id_category) 
+    CONSTRAINT fk_category FOREIGN KEY(category) REFERENCES Category(id_category)
 )
 ENGINE = InnoDB;

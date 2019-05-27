@@ -28,21 +28,25 @@ class Database():
         id_category = 0
         i = 1
         for names in constants.categories_to_display:
+            for page in range(1,4):
+                link = f"https://fr.openfoodfacts.org/categorie/{constants.categories_to_display[id_category][1]}/{page}.json"
+                response = requests.get(link)
+                category_json = json.loads(response.text)
             
-            link = f"https://fr.openfoodfacts.org/categorie/{constants.categories_to_display[id_category][1]}.json"
-            response = requests.get(link)
-            category_json = json.loads(response.text)
-            
-            id_category +=1
-            for products in category_json["products"]:
-                try:  
-                    sql_formula_aliment = f'INSERT INTO Aliment(id_aliment,name_aliment,category,store,grade,link) VALUES ({i},"{products["product_name"]}",{id_category},"{products["stores"]}","{products["nutrition_grades_tags"][0]}","{products["url"]}")'
-                    i +=1
-                    self.cursor.execute(sql_formula_aliment)
-                    self.database.commit()
+                for products in category_json["products"]:
+                    try:  
+                        sql_formula_aliment = f'INSERT INTO Aliment(id_aliment,name_aliment,category,store,grade,link) VALUES ({i},"{products["product_name"]}",{id_category+1},"{products["stores"]}","{products["nutrition_grades_tags"][0]}","{products["url"]}")'
+                        i +=1
+                        self.cursor.execute(sql_formula_aliment)
+                        self.database.commit()
                 
-                except KeyError:    
-                    sql_key_error = f'INSERT INTO Aliment(id_aliment,name_aliment,category,store,grade,link) VALUES ({i},"{products["product_name"]}",{id_category}," ","{products["nutrition_grades_tags"][0]}","{products["url"]}")'
-                    self.cursor.execute(sql_key_error)
-                    self.database.commit()
-                    i +=1
+                    except KeyError:    
+                        sql_key_error = f'INSERT INTO Aliment(id_aliment,name_aliment,category,store,grade,link) VALUES ({i},"{products["product_name"]}",{id_category+1}," ","{products["nutrition_grades_tags"][0]}","{products["url"]}")'
+                        self.cursor.execute(sql_key_error)
+                        self.database.commit()
+                        i +=1 
+            id_category +=1
+
+        sql_delete_empty = 'DELETE FROM Aliment WHERE grade IN ("unknown","not-applicable")'
+        self.cursor.execute(sql_delete_empty)
+        self.database.commit()
