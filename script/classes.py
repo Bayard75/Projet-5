@@ -52,3 +52,10 @@ class Database():
         sql_delete_empty = 'DELETE FROM Aliment WHERE grade IN ("unknown","not-applicable")'
         self.cursor.execute(sql_delete_empty)
         self.database.commit()
+
+    def terminate(self):
+        sql_terminate_animal = "DROP TABLE IF EXISTS animal"
+        sql_terminate_category ="DROP TABLE IF EXISTS category"
+
+        self.cursor.execute(sql_terminate_animal)
+        self.cursor.execute(sql_terminate_category)

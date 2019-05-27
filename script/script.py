@@ -13,4 +13,6 @@ print("Les tables on bien été créees.\n")
 projet5.insert_values()
 print("Les données ont été inséré dans toutes les catégories sans soulever d'expections.\n")
 print("Tous c'est bien passé.\n")
+
+print("Veuillez selectionner une catégorie dans la table suivante")
 os.system("pause")
