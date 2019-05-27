@@ -2,6 +2,7 @@
 #At this point only one class will be created the database
 import constants, requests, mysql.connector,json
 
+mysql.connector.IntegrityError
 class Database():
     
     def __init__(self,database,cursor,table1_formula,table2_formula):
@@ -26,7 +27,7 @@ class Database():
     def insert_values(self):
         
         id_category = 0
-        i = 1
+        i = 0
         for names in constants.categories_to_display:
             for page in range(1,4):
                 link = f"https://fr.openfoodfacts.org/categorie/{constants.categories_to_display[id_category][1]}/{page}.json"
@@ -34,18 +35,19 @@ class Database():
                 category_json = json.loads(response.text)
             
                 for products in category_json["products"]:
+                    i +=1
                     try:  
-                        sql_formula_aliment = f'INSERT INTO Aliment(id_aliment,name_aliment,category,store,grade,link) VALUES ({i},"{products["product_name"]}",{id_category+1},"{products["stores"]}","{products["nutrition_grades_tags"][0]}","{products["url"]}")'
-                        i +=1
+                        sql_formula_aliment = f'INSERT IGNORE INTO Aliment(id_aliment,name_aliment,category,store,grade,link) VALUES ({i},"{products["product_name"]}",{id_category+1},"{products["stores"]}","{products["nutrition_grades_tags"][0]}","{products["url"]}")'
                         self.cursor.execute(sql_formula_aliment)
                         self.database.commit()
                 
                     except KeyError:    
-                        sql_key_error = f'INSERT INTO Aliment(id_aliment,name_aliment,category,store,grade,link) VALUES ({i},"{products["product_name"]}",{id_category+1}," ","{products["nutrition_grades_tags"][0]}","{products["url"]}")'
+                        sql_key_error = f'INSERT IGNORE INTO Aliment(id_aliment,name_aliment,category,store,grade,link) VALUES ({i},"{products["product_name"]}",{id_category+1}," ","{products["nutrition_grades_tags"][0]}","{products["url"]}")'
                         self.cursor.execute(sql_key_error)
                         self.database.commit()
-                        i +=1 
+
             id_category +=1
+
 
         sql_delete_empty = 'DELETE FROM Aliment WHERE grade IN ("unknown","not-applicable")'
         self.cursor.execute(sql_delete_empty)
