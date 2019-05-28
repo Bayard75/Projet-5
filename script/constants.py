@@ -1,6 +1,5 @@
 # In this file we will find our constants such as mysql identification
 #along a list of the categories and product available
-import requests, json
 mysql_host = "localhost"
 mysql_user = "root"
 mysql_password="Vongola75"
@@ -12,6 +11,8 @@ with open(r"files\Category.sql","r") as file:
     Category_table = file.read()
 with open(r"files\Aliment.sql","r") as file:
     Aliment_table =file.read()
+with open(r"files\substitut.sql","r") as file:
+    Substitut_table =file.read()
 
 
 """link = "https://fr.openfoodfacts.org/categorie/pizzas.json"
