@@ -4,6 +4,7 @@ CREATE TABLE aliment (
     category SMALLINT UNSIGNED NOT NULL,
     store TEXT,
     grade TEXT NOT NULL,
+    description TEXT,
     link TEXT,
     PRIMARY KEY (id_aliment),
     CONSTRAINT fk_category FOREIGN KEY(category) REFERENCES Category(id_category),

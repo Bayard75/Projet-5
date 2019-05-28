@@ -8,9 +8,11 @@ mydb = mysql.connector.connect(
 )
 #Creating our cursor, tables, and inserting our data
 mycursor= mydb.cursor()
-Pure_beurre = classes.Database(mydb,mycursor,constants.Category_table,constants.Aliment_table)
+Pure_beurre = classes.Database(mydb,mycursor,constants.Category_table,constants.Aliment_table,constants.Substitut_table)
 print("***Tables created***.\n")
-Pure_beurre.insert_values()
+Pure_beurre.insert_values_category()
+Pure_beurre.insert_values_aliment()
+Pure_beurre.insert_values_substitut()
 print("***All data inserted***.\n")
 print("***Ready to begin***.\n")
 
@@ -29,8 +31,8 @@ while True:
         continue
 
     if path == 1:
-        while True:
-                
+        while True: # Loop to make sure the category is chosen with an int
+
                 print("Selectionnez la catégorie.")
                 Pure_beurre.show_categories()
                 choice_category = input()
@@ -41,7 +43,8 @@ while True:
                     continue
                 Pure_beurre.show_aliments(choice_category)
                 
-                while True:
+                while True: # Loop to make sure the aliment is chosen with an int
+
                     print("Selectionnez l'aliment.")
                     choice_aliment = input()
                     try :
@@ -49,12 +52,13 @@ while True:
                     except ValueError:
                         print("Veuillez rentrer un chiffre")
                         continue
-
-    
-    
-    
-    
-    
+                    
+                    result = Pure_beurre.show_substitut(choice_category)
+                    for row in result:
+                        print(f"Voici le meilleur substitut pour votre aliment:\n{row[0]}\nNote = {row[2]}\nMagasin = {row[1]}\nDescription = {row[3]}\nURL = {row[4]}")
+                    break
+                break
+        break
     elif path == 2:
         pass    
         

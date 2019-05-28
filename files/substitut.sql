@@ -4,9 +4,10 @@ CREATE TABLE substitut (
     category SMALLINT UNSIGNED NOT NULL,
     store TEXT,
     grade TEXT NOT NULL,
-    link TEXT,
     description TEXT,
+    link TEXT,
     PRIMARY KEY (id_aliment),
-    CONSTRAINT fk_category FOREIGN KEY(category) REFERENCES Aliment(category),
-    UNIQUE INDEX (name_aliment, category,grade(1))
+    CONSTRAINT fk_substit_cat FOREIGN KEY(category) REFERENCES Aliment(category),
+    UNIQUE INDEX (category)
 )
+Engine = InnoDB;
