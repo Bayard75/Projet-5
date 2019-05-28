@@ -13,6 +13,7 @@ print("***Tables created***.\n")
 Pure_beurre.insert_values_category()
 Pure_beurre.insert_values_aliment()
 Pure_beurre.insert_values_substitut()
+Pure_beurre.alter_table_aliment()
 print("***All data inserted***.\n")
 print("***Ready to begin***.\n")
 
@@ -41,11 +42,12 @@ while True:
                 except ValueError:
                     print("Veuillez rentrer un chiffre")
                     continue
-                Pure_beurre.show_aliments(choice_category)
                 
                 while True: # Loop to make sure the aliment is chosen with an int
 
                     print("Selectionnez l'aliment.")
+                    Pure_beurre.show_aliments(choice_category)
+
                     choice_aliment = input()
                     try :
                         choice_aliment = int(choice_aliment)
@@ -53,13 +55,24 @@ while True:
                         print("Veuillez rentrer un chiffre")
                         continue
                     
-                    result = Pure_beurre.show_substitut(choice_category)
-                    for row in result:
-                        print(f"Voici le meilleur substitut pour votre aliment:\n{row[0]}\nNote = {row[2]}\nMagasin = {row[1]}\nDescription = {row[3]}\nURL = {row[4]}")
+                    result = Pure_beurre.show_substitut(choice_category, choice_aliment)
+                    
+                    if result == False:
+                        print("Vous avez rentrez un chiffre qui n'est pas dans la catégorie.")
+                        continue
+                    print(f"""Voici le meilleur substitut pour l'aliment selectionné:\nNom = {result[0][0]}\nMagasin = {result[0][1]}\nNutriScore = {result[0][2]}\nDescription = {result[0][3]}\nLien = {result[0][4]}""")
+                    save = input("Souhaitez vous enregistrer ce resultat ou quitter le programme ?\n1- Sauvegarder\n2-Quitter\n")
+                    
+                    try:
+                        save= int(save)
+                    except ValueError:
+                        print("Saissiez 1 ou 2 s'il vous plait.")
+                        continue
                     break
                 break
         break
+
     elif path == 2:
         pass    
-        
+Pure_beurre.terminate()
 os.system("pause")

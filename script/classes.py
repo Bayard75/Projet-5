@@ -14,6 +14,7 @@ class Database():
             self.cursor.execute(table1_formula)
             self.cursor.execute(table2_formula)
             self.cursor.execute(table3_formula)
+
         except:
             print("Erreur dans la creation des tables.")
         
@@ -37,7 +38,7 @@ class Database():
             
                 for products in category_json["products"]:
                     try:  
-                        sql_formula_aliment = f'INSERT IGNORE INTO Aliment(id_aliment,name_aliment,category,store,grade,description,link) VALUES ("{None}","{products["product_name"]}",{id_category+1},"{products["stores"]}","{products["nutrition_grades_tags"][0]}","{products["generic_name"]}","{products["url"]}")'
+                        sql_formula_aliment = f"""INSERT IGNORE INTO Aliment(id_aliment,name_aliment,category,store,grade,description,link) VALUES ("{None}","{products["product_name"]}",{id_category+1},"{products["stores"]}","{products["nutrition_grades_tags"][0]}","{products["generic_name_fr"]}","{products["url"]}")"""
                         self.cursor.execute(sql_formula_aliment)
                         self.database.commit()
                 
@@ -52,10 +53,17 @@ class Database():
         self.database.commit()
 
     def insert_values_substitut(self):
-        sql_substitut ="INSERT IGNORE INTO substitut (id_aliment,name_aliment, category, store, grade, description, link) SELECT * FROM Aliment WHERE grade = 'a' OR grade ='b' OR grade ='c'  ORDER BY grade"
+        sql_substitut ="INSERT IGNORE INTO substitut (id_aliment,category) SELECT id_aliment, category FROM Aliment WHERE grade = 'a' OR grade ='b' OR grade ='c'  ORDER BY grade"
         self.cursor.execute(sql_substitut)
         self.database.commit()
 
+    def alter_table_aliment(self):
+        sql_alter ="ALTER TABLE Aliment ADD COLUMN substitut SMALLINT NOT NULL"
+        self.cursor.execute(sql_alter)
+        sql_add_sub="UPDATE Aliment INNER JOIN Substitut ON Aliment.category = Substitut.category SET Aliment.substitut = Substitut.id_aliment"
+        self.cursor.execute(sql_add_sub)
+        self.database.commit()
+    
     
     def show_categories(self):
         show_cat = "SELECT * FROM Category"
@@ -65,9 +73,9 @@ class Database():
         for categories in showing:
             print("|| ",categories," ||")
 
-    def show_aliments(self, choice):
+    def show_aliments(self, choice_category):
         
-        query = f"SELECT id_aliment,name_aliment FROM Aliment WHERE category = {choice}"
+        query = f"SELECT id_aliment,name_aliment FROM Aliment WHERE category = {choice_category}"
         
         self.cursor.execute(query)
         result = self.cursor.fetchall()
@@ -75,17 +83,25 @@ class Database():
         for row in result :
             print (row)
 
-    def show_substitut(self,choice):
+    def show_substitut(self,choice_category,choice_aliment):
 
-        query = f"SELECT name_aliment, store, grade, description, link FROM substitut WHERE category = {choice}"
-        self.cursor.execute(query)
-        result = self.cursor.fetchall()
-        
-        return result
-        
+        try:
+            query = f"SELECT substitut FROM Aliment WHERE id_aliment = {choice_aliment} AND category = {choice_category}"
+            self.cursor.execute(query)
+            result = self.cursor.fetchall()
+            result =result[0][0]
+
+            query_second=f"SELECT name_aliment, store, grade, description, link FROM Aliment WHERE id_aliment ={result}"
+            self.cursor.execute(query_second)
+            return self.cursor.fetchall()
+        except IndexError:
+            return False
+
     def terminate(self):
-        sql_terminate_animal = "DROP TABLE IF EXISTS animal"
-        sql_terminate_category ="DROP TABLE IF EXISTS category"
+        sql_terminate_animal = "DROP TABLE IF EXISTS Aliment"
+        sql_terminate_substitut ="DROP TABLE IF EXISTS Substitut"
+        sql_terminate_category ="DROP TABLE IF EXISTS Category"
 
         self.cursor.execute(sql_terminate_animal)
+        self.cursor.execute(sql_terminate_substitut)
         self.cursor.execute(sql_terminate_category)

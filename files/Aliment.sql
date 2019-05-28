@@ -1,4 +1,4 @@
-CREATE TABLE aliment (
+CREATE TABLE IF NOT EXISTS aliment (
     id_aliment SMALLINT AUTO_INCREMENT NOT NULL,
     name_aliment VARCHAR(150) NOT NULL,
     category SMALLINT UNSIGNED NOT NULL,
