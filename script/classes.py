@@ -28,7 +28,7 @@ class Database():
         
         id_category = 0
         for names in constants.categories_to_display:
-            for page in range(1,4):
+            for page in range(1,3):
                 link = f"https://fr.openfoodfacts.org/categorie/{constants.categories_to_display[id_category][1]}/{page}.json"
                 response = requests.get(link)
                 category_json = json.loads(response.text)
@@ -51,7 +51,7 @@ class Database():
         self.cursor.execute(sql_delete_empty)
         self.database.commit()
 
-    def category_choice(self):
+    def show_categories(self):
         show_cat = "SELECT * FROM Category"
         self.cursor.execute(show_cat)
         showing = self.cursor.fetchall()
@@ -59,7 +59,8 @@ class Database():
         for categories in showing:
             print("|| ",categories," ||")
 
-        choice = int(input())
+    def show_aliments(self, choice):
+        
         query = f"SELECT id_aliment,name_aliment FROM Aliment where category = {choice}"
         
         self.cursor.execute(query)
