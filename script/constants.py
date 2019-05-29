@@ -14,3 +14,5 @@ with open(r"files\Aliment.sql","r") as file:
     Aliment_table =file.read()
 with open(r"files\substitut.sql","r") as file:
     Substitut_table =file.read()
+with open(r"files\Favorite.sql","r") as file:
+    Favorite_table =file.read()

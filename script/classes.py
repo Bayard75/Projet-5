@@ -1,11 +1,11 @@
 #This file will be used to create our classes need
 #At this point only one class will be created the database
-import constants, requests, mysql.connector,json
+import constants, requests, mysql.connector,json, pickle
 
 mysql.connector.IntegrityError
 class Database():
     
-    def __init__(self,database,cursor,table1_formula,table2_formula,table3_formula):
+    def __init__(self,database,cursor,table1_formula,table2_formula,table3_formula,table4_formula):
         self.database = database
         self.cursor = cursor
         
@@ -14,7 +14,7 @@ class Database():
             self.cursor.execute(table1_formula)
             self.cursor.execute(table2_formula)
             self.cursor.execute(table3_formula)
-
+            self.cursor.execute(table4_formula)
         except:
             print("Erreur dans la creation des tables.")
         
@@ -38,7 +38,7 @@ class Database():
             
                 for products in category_json["products"]:
                     try:  
-                        sql_formula_aliment = f"""INSERT IGNORE INTO Aliment(id_aliment,name_aliment,category,store,grade,description,link) VALUES ("{None}","{products["product_name"]}",{id_category+1},"{products["stores"]}","{products["nutrition_grades_tags"][0]}","{products["generic_name_fr"]}","{products["url"]}")"""
+                        sql_formula_aliment = f"""INSERT IGNORE INTO Aliment(id_aliment,name_aliment,category,store,grade,description,link) VALUES ("{None}","{products["product_name"]}",{id_category+1},"{products["stores"].replace("''","Non Disponibe")}","{products["nutrition_grades_tags"][0]}","{products["generic_name_fr"].replace("''","Non disponible")}","{products["url"]}")"""
                         self.cursor.execute(sql_formula_aliment)
                         self.database.commit()
                 
@@ -55,6 +55,18 @@ class Database():
     def insert_values_substitut(self):
         sql_substitut ="INSERT IGNORE INTO substitut (id_aliment,category) SELECT id_aliment, category FROM Aliment WHERE grade = 'a' OR grade ='b' OR grade ='c'  ORDER BY grade"
         self.cursor.execute(sql_substitut)
+        self.database.commit()
+
+
+    def insert_values_favorite(self):
+        
+       #Add loop to go trough each object not just the fisrt one
+        with open(r"files\favorite_list.txt","rb") as list_fav:
+            favs = pickle.load(list_fav)
+        for row in favs:
+            querry = f"""INSERT INTO Favorite (name_aliment, category, store, grade, description, link) VALUES ("{row[0]}",{row[1]},"{row[2]}","{row[3]}",
+            "{row[4]}","{row[5]}")"""
+        self.cursor.execute(querry)
         self.database.commit()
 
     def alter_table_aliment(self):
@@ -91,17 +103,31 @@ class Database():
             result = self.cursor.fetchall()
             result =result[0][0]
 
-            query_second=f"SELECT name_aliment, store, grade, description, link FROM Aliment WHERE id_aliment ={result}"
+            query_second=f"SELECT name_aliment, category, store, grade, description, link FROM Aliment WHERE id_aliment ={result}"
             self.cursor.execute(query_second)
             return self.cursor.fetchall()
         except IndexError:
             return False
-
+    
+    def show_favorite(self):
+        
+        querry ="SELECT * FROM Favorite"
+        self.cursor.execute(querry)
+        table= self.cursor.fetchall()
+        for item in table:
+            print(table)
+    
+    def add_favorite(self,result):
+         with open(r"files\favorite_list.txt","ab") as written_file:
+            pickle.dump(result,written_file)
+        
     def terminate(self):
         sql_terminate_animal = "DROP TABLE IF EXISTS Aliment"
         sql_terminate_substitut ="DROP TABLE IF EXISTS Substitut"
+        sql_terminate_favorite="DROP TABLE IF EXISTS Favorite"
         sql_terminate_category ="DROP TABLE IF EXISTS Category"
 
         self.cursor.execute(sql_terminate_animal)
         self.cursor.execute(sql_terminate_substitut)
+        self.cursor.execute(sql_terminate_favorite)
         self.cursor.execute(sql_terminate_category)
