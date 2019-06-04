@@ -88,16 +88,23 @@ class Database():
             query_grade = f"SELECT grade FROM Aliment WHERE id_aliment = {choice_aliment} AND category ={choice_category}"
             self.cursor.execute(query_grade)
             grade = self.cursor.fetchall()
-
+            lettre ='a'
             if grade: #If our grade list is not empty 
-                query = f"SELECT * from aliment where (category ={choice_category} AND id_aliment != {choice_aliment}) AND (grade ='a' OR grade ='b' OR grade ='c' OR grade = 'd' OR grade ='e') AND grade <= '{grade[0][0]}'ORDER BY RAND() LIMIT 1"
-                self.cursor.execute(query)
-                result = self.cursor.fetchall()
-                id_substitut = result[0][0]
-                querry_add_sub = f"INSERT IGNORE INTO Substitut(id_substitut, id_substitut_of) VALUES ({id_substitut}, {choice_aliment})"
-                self.cursor.execute(querry_add_sub)
-                self.database.commit()
-                return result
+                grade = grade[0][0]
+                
+                
+                while lettre <= grade: #While our grade is superior to the lettre (which starts at 'a')
+                    query = f"SELECT * from aliment where (category ={choice_category} AND id_aliment != {choice_aliment}) AND grade ='{lettre}' ORDER BY RAND() LIMIT 1"
+                    self.cursor.execute(query)
+                    result = self.cursor.fetchall()
+                    if result: #If the grade exists we stop the loop and go insert our new substitut into the table
+                        id_substitut = result[0][0]
+                        querry_add_sub = f"INSERT IGNORE INTO Substitut(id_substitut, id_substitut_of) VALUES ({id_substitut}, {choice_aliment})"
+                        self.cursor.execute(querry_add_sub)
+                        self.database.commit()
+                        return result
+                    else: #If the list empty
+                        lettre = chr(ord(lettre)+1) #We increment our lettre
             else : 
                 return None
 
@@ -114,6 +121,7 @@ class Database():
         querry_get_name =f"SELECT name_aliment FROM Aliment where id_aliment = {choice_aliment}"
         self.cursor.execute(querry_get_name)
         name = self.cursor.fetchall()
+        
         #We affect our result array and name to variables to avoid errors in the coming querry
         name_sub = str(name[0][0])
         name_aliment = str(result[0][1])
@@ -122,6 +130,7 @@ class Database():
         description = str(result[0][5])
         link = str(result[0][6])
         #We now insert our favorite aliment in the table
+
         querry_add_favorite = f"""INSERT IGNORE INTO Favorite(name_aliment,substitut_of, store, grade, description, link) VALUES ("{name_aliment}","{name_sub}","{store}","{grade}","{description}","{link}")"""
         self.cursor.execute(querry_add_favorite)
         self.database.commit()
