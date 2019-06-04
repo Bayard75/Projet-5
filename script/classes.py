@@ -110,19 +110,19 @@ class Database():
             print(item)
     
     def add_favorite(self,result,choice_aliment):
+
         querry_get_name =f"SELECT name_aliment FROM Aliment where id_aliment = {choice_aliment}"
         self.cursor.execute(querry_get_name)
         name = self.cursor.fetchall()
-        
+        #We affect our result array and name to variables to avoid errors in the coming querry
         name_sub = str(name[0][0])
         name_aliment = str(result[0][1])
         store =str(result[0][3])
         grade =str(result[0][4])
         description = str(result[0][5])
         link = str(result[0][6])
-
-        querry_add_favorite = f"""INSERT IGNORE INTO Favorite(name_aliment,substitut_of, store, grade, description, link) VALUES ("{name_aliment}","{name_sub}","{grade}","{store}","{description}","{link}")"""
+        #We now insert our favorite aliment in the table
+        querry_add_favorite = f"""INSERT IGNORE INTO Favorite(name_aliment,substitut_of, store, grade, description, link) VALUES ("{name_aliment}","{name_sub}","{store}","{grade}","{description}","{link}")"""
         self.cursor.execute(querry_add_favorite)
-        self.database.commit()
         self.database.commit()
          

@@ -78,5 +78,5 @@ while True:
 
     if path == 2:
         Pure_beurre.show_favorite()
-#Pure_beurre.terminate()
+        break
 os.system("pause")
