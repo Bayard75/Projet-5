@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS aliment (
     link TEXT,
     PRIMARY KEY (id_aliment),
     CONSTRAINT fk_category FOREIGN KEY(category) REFERENCES Category(id_category),
-    UNIQUE INDEX (name_aliment, category,grade(1))
+    UNIQUE INDEX (name_aliment, category,grade(1)),
+    UNIQUE INDEX(name_aliment)
 )
 ENGINE = InnoDB;

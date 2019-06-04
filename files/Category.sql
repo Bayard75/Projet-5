@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS Category ( 
 id_category SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
 name_category VARCHAR(150) NOT NULL,
-PRIMARY KEY(id_category)
+PRIMARY KEY(id_category),
+UNIQUE INDEX (name_category)
 )
 ENGINE=InnoDB;

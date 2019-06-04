@@ -12,11 +12,9 @@ Pure_beurre = classes.Database(mydb,mycursor, constants.Category_table, constant
 print("***Tables created***.\n")
 Pure_beurre.insert_values_category()
 Pure_beurre.insert_values_aliment()
-Pure_beurre.insert_values_substitut()
 Pure_beurre.alter_table_aliment()
 print("***All data inserted***.\n")
 print("***Ready to begin***.\n")
-result = Pure_beurre.show_substitut(1, 1)
 
 
 
@@ -58,11 +56,13 @@ while True:
                         print("Veuillez rentrer un chiffre")
                         continue
                     result = Pure_beurre.show_substitut(choice_category,choice_aliment)
-                    if result == False:
+                    if result == None:
                         print("Vous avez rentrez un chiffre qui n'est pas dans la catégorie.")
                         continue
-                    print(f"Voici le meilleur substitut pour l'aliment selectionné:\nNom = {result[0][0]}\nMagasin = {result[0][1]}\nNutriScore = {result[0][2]}\nDescription = {result[0][3]}\nLien = {result[0][4]}")
-                    save = input("Souhaitez vous enregistrer ce resultat ou quitter le programme ?\n1- Sauvegarder\n2-Quitter\n")
+                    elif result != None:
+                        print(result)
+                    
+                        save = input("Souhaitez vous enregistrer ce resultat ou quitter le programme ?\n1- Sauvegarder\n2-Quitter\n")
                     
                     try:
                         save= int(save)
@@ -70,13 +70,13 @@ while True:
                         print("Saissiez 1 ou 2 s'il vous plait.")
                         continue
                     if save == 1 :
-                        Pure_beurre.add_favorite(result) 
+                        Pure_beurre.add_favorite(result,choice_aliment) 
+
                     break
                 break
         break
 
     if path == 2:
-        Pure_beurre.insert_values_favorite()
         Pure_beurre.show_favorite()
-Pure_beurre.terminate()
+#Pure_beurre.terminate()
 os.system("pause")
