@@ -1,8 +1,8 @@
 #This file will be used to create our classes need
 #At this point only one class will be created the database
-import constants, requests, mysql.connector,json, pickle
+import constants, requests, mysql.connector,json
+from prettytable import PrettyTable
 
-mysql.connector.IntegrityError
 class Database():
     
     def __init__(self,database,cursor,table1_formula,table2_formula,table3_formula,table4_formula):
@@ -20,10 +20,13 @@ class Database():
         
     def insert_values_category(self):
         #Inserting our first values into table1
-            sql_category_formula ="INSERT IGNORE INTO Category(id_category,name_category) VALUES (%s,%s)"
-            self.cursor.executemany(sql_category_formula,constants.categories_to_display)
-            self.database.commit()
-    
+            try:
+                sql_category_formula ="INSERT INTO Category(id_category,name_category) VALUES (%s,%s)"
+                self.cursor.executemany(sql_category_formula,constants.categories_to_display)
+                self.database.commit()
+                return True
+            except:
+                return False
     def insert_values_aliment(self):
         
         id_category = 0
@@ -41,7 +44,6 @@ class Database():
                 
                     except KeyError:    
                         continue
-
             id_category +=1
 
 
@@ -53,12 +55,16 @@ class Database():
 
 
     def show_categories(self):
+        affichage_style = PrettyTable()
+        affichage_style.field_names =["Numero","Nom"]
+
         show_cat = "SELECT * FROM Category ORDER BY id_category"
         self.cursor.execute(show_cat)
         showing = self.cursor.fetchall()
         
         for categories in showing:
-            print("|| ",categories," ||")
+            affichage_style.add_row(categories)
+        print(affichage_style)
 
     def alter_table_aliment(self):
         sql_delete_empty = "DELETE FROM Aliment WHERE grade IN ('unknown','not-applicable')"
@@ -71,17 +77,22 @@ class Database():
         self.database.commit()
         self.cursor.execute(sql_update_store)
         self.database.commit()
-
+        sql_increment ="SET @count=0"
+        self.cursor.execute(sql_increment)
+        sql_increment="UPDATE Aliment SET id_aliment =@count:= @count+1"
+        self.cursor.execute(sql_increment)
 
     def show_aliments(self, choice_category):
-        
+        affichage_style = PrettyTable()
+        affichage_style.field_names =["Numero","Nom"]
         query = f"SELECT id_aliment,name_aliment FROM Aliment WHERE category = {choice_category}"
         
         self.cursor.execute(query)
         result = self.cursor.fetchall()
 
         for row in result :
-            print (row)
+            affichage_style.add_row(row)
+        print(affichage_style)
 
     def show_substitut(self,choice_category,choice_aliment):
 
@@ -110,11 +121,15 @@ class Database():
 
     def show_favorite(self):
         
+        affichage_style = PrettyTable()
+        affichage_style.field_names=["Nom","Substitut de","Magasin","Nutriscore","Description","Lien"]
+        
         querry ="SELECT * FROM Favorite"
         self.cursor.execute(querry)
         table= self.cursor.fetchall()
         for item in table:
-            print(item)
+            affichage_style.add_row(item)
+        print(affichage_style)
     
     def add_favorite(self,result,choice_aliment):
 

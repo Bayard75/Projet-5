@@ -16,12 +16,5 @@ with open(r"files\substitut.sql","r") as file:
     Substitut_table =file.read()
 with open(r"files\Favorite.sql","r") as file:
     Favorite_table =file.read()
-a=1
-for grade in ('a','b','c','d','e'):
-    print(grade)
-    if a ==3:
-        break
-        print(a)
-        print(grade)
-        a+=1
+
         

@@ -1,4 +1,5 @@
-import os, mysql.connector, requests, json, constants, classes, pickle
+import os, mysql.connector, requests, json, constants, classes
+from prettytable import PrettyTable
 
 mydb = mysql.connector.connect(
     host =constants.mysql_host,
@@ -7,12 +8,16 @@ mydb = mysql.connector.connect(
     database =constants.mysql_database
 )
 #Creating our cursor, tables, and inserting our data
+affichage_style = PrettyTable()
+
 mycursor= mydb.cursor()
 Pure_beurre = classes.Database(mydb,mycursor, constants.Category_table, constants.Aliment_table, constants.Substitut_table, constants.Favorite_table)
 print("***Tables created***.\n")
-Pure_beurre.insert_values_category()
-Pure_beurre.insert_values_aliment()
-Pure_beurre.alter_table_aliment()
+
+if Pure_beurre.insert_values_category() == True: #If the category values haven't already been inserted we assume that the aliment ones haven't been too
+    Pure_beurre.insert_values_aliment() #This allows us to gain some time when we relaunch the program
+    Pure_beurre.alter_table_aliment()
+    
 print("***All data inserted***.\n")
 print("***Ready to begin***.\n")
 
@@ -60,7 +65,10 @@ while True:
                         print("Vous avez rentrez un chiffre qui n'est pas dans la catégorie.")
                         continue
                     elif result != None:
-                        print(result)
+                        
+                        affichage_style.field_names=["Numero","Nom","Category","Magasin","Nutriscore","Description","Lien"]
+                        affichage_style.add_row((result[0]))
+                        print(affichage_style)
                     
                         save = input("Souhaitez vous enregistrer ce resultat ou quitter le programme ?\n1- Sauvegarder\n2-Quitter\n")
                     
