@@ -2,10 +2,11 @@
 #At this point only one class will be created the database
 import constants, requests, mysql.connector,json
 from prettytable import PrettyTable
-
+from mysql.connector.errors import Error
 class Database():
     
     def __init__(self,database,cursor,table1_formula,table2_formula,table3_formula,table4_formula):
+        """Class that creates 4 tables on initiation"""
         self.database = database
         self.cursor = cursor
         
@@ -15,23 +16,30 @@ class Database():
             self.cursor.execute(table2_formula)
             self.cursor.execute(table3_formula)
             self.cursor.execute(table4_formula)
-        except:
+        except :
             print("Erreur dans la creation des tables.")
         
     def insert_values_category(self):
+        """Method that inserts predefined categories into the category table"""
         #Inserting our first values into table1
-            try:
+        try:
                 sql_category_formula ="INSERT INTO Category(id_category,name_category) VALUES (%s,%s)"
                 self.cursor.executemany(sql_category_formula,constants.categories_to_display)
                 self.database.commit()
                 return True
-            except:
-                return False
+         
+        except mysql.connector.Error as e: 
+            if e.args[0]==1062:
+                return False # 1062 means that our values have already been inserted so we return false to skip the insertion
+            else:
+                print(e)
+
     def insert_values_aliment(self):
-        
+        """Method that inserts our aliemnt into the aliment table, by searching through our API : Openfoodfacts"""
+
         id_category = 0
-        for names in constants.categories_to_display:
-            for page in range(1,3):
+        for names in constants.categories_to_display: #We get our aliment based on our categories
+            for page in range(1,4):
                 link = f"https://fr.openfoodfacts.org/categorie/{constants.categories_to_display[id_category][1]}/{page}.json"
                 response = requests.get(link)
                 category_json = json.loads(response.text)
@@ -44,6 +52,11 @@ class Database():
                 
                     except KeyError:    
                         continue
+                    except mysql.connector.Error as e: 
+                        if e.args[0]==1062:
+                            return False # 1062 means that our values have already been inserted so we return false to skip the insertion
+                        else:
+                            print(e)
             id_category +=1
 
 
@@ -67,6 +80,8 @@ class Database():
         print(affichage_style)
 
     def alter_table_aliment(self):
+        """Method that deletes row where there is no grade, updates those were the store and description our unavailable,the re_increment our id_aliment"""
+
         sql_delete_empty = "DELETE FROM Aliment WHERE grade IN ('unknown','not-applicable')"
         self.cursor.execute(sql_delete_empty)
         self.database.commit()
@@ -77,12 +92,15 @@ class Database():
         self.database.commit()
         self.cursor.execute(sql_update_store)
         self.database.commit()
+
         sql_increment ="SET @count=0"
         self.cursor.execute(sql_increment)
         sql_increment="UPDATE Aliment SET id_aliment =@count:= @count+1"
         self.cursor.execute(sql_increment)
 
     def show_aliments(self, choice_category):
+        """Method that display the aliment chosen it takes 1 parametre : the category"""
+
         affichage_style = PrettyTable()
         affichage_style.field_names =["Numero","Nom"]
         query = f"SELECT id_aliment,name_aliment FROM Aliment WHERE category = {choice_category}"
@@ -95,15 +113,15 @@ class Database():
         print(affichage_style)
 
     def show_substitut(self,choice_category,choice_aliment):
-
+            """Method that selects and displays a substitut given 2 parametres : the category and the aliment"""
+            
             query_grade = f"SELECT grade FROM Aliment WHERE id_aliment = {choice_aliment} AND category ={choice_category}"
             self.cursor.execute(query_grade)
             grade = self.cursor.fetchall()
             lettre ='a'
             if grade: #If our grade list is not empty 
                 grade = grade[0][0]
-                
-                
+
                 while lettre <= grade: #While our grade is superior to the lettre (which starts at 'a')
                     query = f"SELECT * from aliment where (category ={choice_category} AND id_aliment != {choice_aliment}) AND grade ='{lettre}' ORDER BY RAND() LIMIT 1"
                     self.cursor.execute(query)
@@ -144,7 +162,7 @@ class Database():
         grade =str(result[0][4])
         description = str(result[0][5])
         link = str(result[0][6])
-        #We now insert our favorite aliment in the table
+        #We now insert our favorite aliment into the table
 
         querry_add_favorite = f"""INSERT IGNORE INTO Favorite(name_aliment,substitut_of, store, grade, description, link) VALUES ("{name_aliment}","{name_sub}","{store}","{grade}","{description}","{link}")"""
         self.cursor.execute(querry_add_favorite)

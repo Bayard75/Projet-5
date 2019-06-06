@@ -26,7 +26,7 @@ print("***Ready to begin***.\n")
 #The main part of our program
 while True:
     
-    print(" 1- Quel aliment souhaitez-vous remplacer ?\n 2- Retrouvez mes aliemnts substitués")
+    print(" 1- Quel aliment souhaitez-vous remplacer ?\n 2- Retrouvez mes aliments substitués")
     path = input()
     try:
         path = int(path)
@@ -65,7 +65,7 @@ while True:
                         print("Vous avez rentrez un chiffre qui n'est pas dans la catégorie.")
                         continue
                     elif result != None:
-                        
+                        print("Voici le meilleur substitut de l'aliment selectionné.")
                         affichage_style.field_names=["Numero","Nom","Category","Magasin","Nutriscore","Description","Lien"]
                         affichage_style.add_row((result[0]))
                         print(affichage_style)
