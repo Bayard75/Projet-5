@@ -17,6 +17,3 @@ with open(r"files\substitut.sql","r") as file:
 with open(r"files\Favorite.sql","r") as file:
     Favorite_table =file.read()
 
-for i in range(1,3):
-    print(i)
-        

@@ -22,17 +22,18 @@ class Database():
     def insert_values_category(self):
         """Method that inserts predefined categories into the category table"""
         #Inserting our first values into table1
-        try:
+        while True:
+            try:
                 sql_category_formula ="INSERT INTO Category(id_category,name_category) VALUES (%s,%s)"
                 self.cursor.executemany(sql_category_formula,constants.categories_to_display)
                 self.database.commit()
                 return True
          
-        except mysql.connector.Error as e: 
-            if e.args[0]==1062:
-                return False # 1062 means that our values have already been inserted so we return false to skip the insertion
-            else:
-                print(e)
+            except mysql.connector.Error as e: 
+                if e.args[0]==1062:
+                    return False # 1062 means that our values have already been inserted so we return false to skip the insertion
+                else:
+                    print(e)
 
     def insert_values_aliment(self):
         """Method that inserts our aliemnt into the aliment table, by searching through our API : Openfoodfacts"""
@@ -54,7 +55,7 @@ class Database():
                         continue
                     except mysql.connector.Error as e: 
                         if e.args[0]==1062:
-                            return False # 1062 means that our values have already been inserted so we return false to skip the insertion
+                            break # 1062 means that our values have already been inserted so we return false to skip the insertion
                         else:
                             print(e)
             id_category +=1
