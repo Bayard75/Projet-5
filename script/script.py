@@ -1,7 +1,7 @@
 import os, mysql.connector, requests, json, constants, classes
 from prettytable import PrettyTable
 
-mydb = mysql.connector.connect(
+mydb = mysql.connector.connect( 
     host =constants.mysql_host,
     user = constants.mysql_user,
     password=constants.mysql_password,
@@ -12,6 +12,10 @@ affichage_style = PrettyTable()
 
 mycursor= mydb.cursor()
 Pure_beurre = classes.Database(mydb,mycursor, constants.Category_table, constants.Aliment_table, constants.Substitut_table, constants.Favorite_table)
+
+if Pure_beurre == False:
+    quit
+
 print("***Tables created***.\n")
 
 if Pure_beurre.insert_values_category() == True: #If the category values haven't already been inserted we assume that the aliment ones haven't been too

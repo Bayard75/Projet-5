@@ -16,8 +16,10 @@ class Database():
             self.cursor.execute(table2_formula)
             self.cursor.execute(table3_formula)
             self.cursor.execute(table4_formula)
+            return True
         except :
             print("Erreur dans la creation des tables.")
+            return False
         
     def insert_values_category(self):
         """Method that inserts predefined categories into the category table"""
