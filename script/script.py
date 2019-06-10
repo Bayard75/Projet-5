@@ -22,19 +22,19 @@ print("***All data inserted***.\n")
 print("***Ready to begin***.\n")
 
 
-
+path = 0
 #The main part of our program
-while True:
+while path !=3:
     
-    print(" 1- Quel aliment souhaitez-vous remplacer ?\n 2- Retrouvez mes aliments substitués")
+    print(" 1- Quel aliment souhaitez-vous remplacer ?\n 2- Retrouvez mes aliments substitués\n 3- Quitter")
     path = input()
     try:
         path = int(path)
     except ValueError:
         print("La valeur saisie n'est pas un chifrre")
         continue
-    if path not in (1,2):
-        print("Veuillez choisir entre 1 et 2.")
+    if path not in (1,2,3):
+        print("Veuillez choisir entre 1 et 2 ou 3 pour quitter.")
         continue
 
     if path == 1:
@@ -79,12 +79,13 @@ while True:
                         continue
                     if save == 1 :
                         Pure_beurre.add_favorite(result,choice_aliment) 
-
-                    break
+                        print("Votre aliment a bien était sauvegardé !\n\n")
+                        break
+                    if save == 2:
+                        quit()
                 break
-        break
-
+        continue
     if path == 2:
         Pure_beurre.show_favorite()
-        break
+
 os.system("pause")
