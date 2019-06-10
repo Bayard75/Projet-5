@@ -1,6 +1,11 @@
 # Projet-5
+<<<<<<< HEAD
+Ce programme a pour but de reprondre à la demande suivante : 
+-En tant qu'utilisateur je veux pouvoir trouver un substitut pour mieux m'alimenter
+=======
 Ce programme a pour but de reprondre à la demande suivante :
 \n-En tant qu'utilisateur je veux pouvoir trouver un substitut pour mieux m'alimenter
+>>>>>>> 11e527619d87aed5d3cd4702f37f428dd630f188
 
 Pour ce faire il aura les fonctionnalités suivantes :
 -L'utilisateur aura le choix entre plusieurs catégories d'aliments
@@ -15,4 +20,4 @@ Notre programme répond donc aux besoins suivant :
 
 -En tant qu'utilisateur je veux pouvoir retrouver mes anciennes recherches pour y retrouver les informations sur les produits
 
-Ce programme fera appel à l'API d'OPENFOODFACTS et utilisera mysql pour créer une base de données et des scripts python pour intéragir entre les différentes table de la db.
+Ce programme fera appel à l'API d'OPENFOODFACTS, utilisera mysql pour créer une base de données et des scripts python pour intéragir entre les différentes table de la base de données.
