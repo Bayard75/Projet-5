@@ -1,11 +1,10 @@
 # Projet-5
-<<<<<<< HEAD
 Ce programme a pour but de reprondre à la demande suivante : 
 -En tant qu'utilisateur je veux pouvoir trouver un substitut pour mieux m'alimenter
 =======
 Ce programme a pour but de reprondre à la demande suivante :
-\n-En tant qu'utilisateur je veux pouvoir trouver un substitut pour mieux m'alimenter
->>>>>>> 11e527619d87aed5d3cd4702f37f428dd630f188
+-En tant qu'utilisateur je veux pouvoir trouver un substitut pour mieux m'alimenter
+
 
 Pour ce faire il aura les fonctionnalités suivantes :
 -L'utilisateur aura le choix entre plusieurs catégories d'aliments
