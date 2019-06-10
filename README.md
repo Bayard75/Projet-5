@@ -1,6 +1,5 @@
 # Projet-5
-Ce programme a pour but de reprondre à la demande suivante : 
--En tant qu'utilisateur je veux pouvoir trouver un substitut pour mieux m'alimenter
+Utilisation d'une API pour créer une base de données permetant la substitution d'aliments grâce à Pyrhon
 =======
 Ce programme a pour but de reprondre à la demande suivante :
 -En tant qu'utilisateur je veux pouvoir trouver un substitut pour mieux m'alimenter
