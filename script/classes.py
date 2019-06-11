@@ -16,15 +16,13 @@ class Database():
             self.cursor.execute(table2_formula)
             self.cursor.execute(table3_formula)
             self.cursor.execute(table4_formula)
-            return True
         except :
             print("Erreur dans la creation des tables.")
-            return False
-        
+            return 0
+    
     def insert_values_category(self):
-        """Method that inserts predefined categories into the category table"""
-        #Inserting our first values into table1
-        while True:
+            """Method that inserts predefined categories into the category table"""
+            #Inserting our first values into table1
             try:
                 sql_category_formula ="INSERT INTO Category(id_category,name_category) VALUES (%s,%s)"
                 self.cursor.executemany(sql_category_formula,constants.categories_to_display)
@@ -33,13 +31,13 @@ class Database():
          
             except mysql.connector.Error as e: 
                 if e.args[0]==1062:
-                    return False # 1062 means that our values have already been inserted so we return false to skip the insertion
+                    return  # 1062 means that our values have already been inserted so we return false to skip the insertion
                 else:
-                    print(e)
+                    print("Erreur dans l'insertion des données dans la table category. Erreur : ",e)
+                    return
 
     def insert_values_aliment(self):
         """Method that inserts our aliemnt into the aliment table, by searching through our API : Openfoodfacts"""
-
         id_category = 0
         for names in constants.categories_to_display: #We get our aliment based on our categories
             for page in range(1,4):
@@ -49,18 +47,19 @@ class Database():
             
                 for products in category_json["products"]:
                     try:  
-                        sql_formula_aliment = f"""INSERT IGNORE INTO Aliment(id_aliment,name_aliment,category,store,grade,description,link) VALUES ("{None}","{products["product_name"]}",{id_category+1},"{products["stores"]}","{products["nutrition_grades_tags"][0]}","{products["generic_name_fr"]}","{products["url"]}")"""
+                        sql_formula_aliment = f"""INSERT IGNORE INTO Aliment(id_aliment,name_aliment,category,store,grade,description,link) VALUES ('{None}',"{products["product_name"]}",{id_category+1},"{products["stores"]}","{products["nutrition_grades_tags"][0]}","{products["generic_name_fr"]}","{products["url"]}")"""
                         self.cursor.execute(sql_formula_aliment)
-                        self.database.commit()
                 
                     except KeyError:    
                         continue
                     except mysql.connector.Error as e: 
-                        if e.args[0]==1062:
-                            break # 1062 means that our values have already been inserted so we return false to skip the insertion
-                        else:
-                            print(e)
+                            print("Erreur rencontrée : ",e)
+                    self.database.commit()
+
             id_category +=1
+        with open (r"files\aliment_status.txt","w") as file: #Once inserted we create a file to keep track of that status
+            file.write("Done")
+
 
 
     def insert_values_substitut(self):
@@ -100,6 +99,7 @@ class Database():
         self.cursor.execute(sql_increment)
         sql_increment="UPDATE Aliment SET id_aliment =@count:= @count+1"
         self.cursor.execute(sql_increment)
+        self.database.commit()
 
     def show_aliments(self, choice_category):
         """Method that display the aliment chosen it takes 1 parametre : the category"""

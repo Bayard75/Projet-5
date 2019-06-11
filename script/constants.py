@@ -17,3 +17,8 @@ with open(r"files\substitut.sql","r") as file:
 with open(r"files\Favorite.sql","r") as file:
     Favorite_table =file.read()
 
+try :
+    with open(r"files\aliment_status.txt","r") as file:
+        Aliment_status = file.read()
+except:
+    pass
