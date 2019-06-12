@@ -98,7 +98,6 @@ while path !=3:
                         if save == 2:
                             quit()
                 break
-        continue
 
     if path == 2:
         Pure_beurre.show_favorite()
