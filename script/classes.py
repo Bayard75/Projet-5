@@ -1,5 +1,6 @@
-#This file will be used to create our classes need
-#At this point only one class will be created the database
+"""This file will be used to create our classes need
+At this point only one class will be created the database"""
+
 import constants, requests, mysql.connector,json
 from prettytable import PrettyTable
 from mysql.connector.errors import Error
@@ -25,7 +26,7 @@ class Database():
             #Inserting our first values into table1
             try:
                 sql_category_formula ="INSERT INTO Category(id_category,name_category) VALUES (%s,%s)"
-                self.cursor.executemany(sql_category_formula,constants.categories_to_display)
+                self.cursor.executemany(sql_category_formula,constants.CATEGORIES_TO_DISPLAY)
                 self.database.commit()
                 return True
          
@@ -38,10 +39,11 @@ class Database():
 
     def insert_values_aliment(self):
         """Method that inserts our aliemnt into the aliment table, by searching through our API : Openfoodfacts"""
+        
         id_category = 0
-        for names in constants.categories_to_display: #We get our aliment based on our categories
+        for names in constants.CATEGORIES_TO_DISPLAY: #We get our aliment based on our categories
             for page in range(1,4):
-                link = f"https://fr.openfoodfacts.org/categorie/{constants.categories_to_display[id_category][1]}/{page}.json"
+                link = f"https://fr.openfoodfacts.org/categorie/{constants.CATEGORIES_TO_DISPLAY[id_category][1]}/{page}.json"
                 response = requests.get(link)
                 category_json = json.loads(response.text)
             
@@ -57,17 +59,15 @@ class Database():
                     self.database.commit()
 
             id_category +=1
+        
         with open (r"files\aliment_status.txt","w") as file: #Once inserted we create a file to keep track of that status
             file.write("Done")
 
-
-
     def insert_values_substitut(self):
+        
         sql_substitut ="INSERT IGNORE INTO substitut (id_aliment,category) SELECT id_aliment, category FROM Aliment WHERE grade = 'a' OR grade ='b' OR grade ='c'  ORDER BY grade"
         self.cursor.execute(sql_substitut)
         self.database.commit()
-
-
 
     def show_categories(self):
         affichage_style = PrettyTable()
@@ -121,6 +121,7 @@ class Database():
             query_grade = f"SELECT grade FROM Aliment WHERE id_aliment = {choice_aliment} AND category ={choice_category}"
             self.cursor.execute(query_grade)
             grade = self.cursor.fetchall()
+
             lettre ='a'
             if grade: #If our grade list is not empty 
                 grade = grade[0][0]
@@ -134,11 +135,13 @@ class Database():
                         querry_add_sub = f"INSERT IGNORE INTO Substitut(id_substitut, id_substitut_of) VALUES ({id_substitut}, {choice_aliment})"
                         self.cursor.execute(querry_add_sub)
                         self.database.commit()
-                        return result
+                        break
                     else: #If the list empty
                         lettre = chr(ord(lettre)+1) #We increment our lettre
+                return result
+            
             else : 
-                return None
+                return 0 #Grade is empty so the id_category and id_aliment given are incompatible
 
     def show_favorite(self):
         

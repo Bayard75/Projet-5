@@ -1,24 +1,25 @@
-# In this file we will find our constants such as mysql identification
-#along a list of the categories and product available
+"""In this file we will find our constants such as mysql identification
+along a list of the categories and product available"""
 
-mysql_host = "localhost"
-mysql_user = "root"
-mysql_password="Vongola75"
-mysql_database ="Pur_beurre"
+#The user only has to enter these 4 parameters before starting the program
+MYSQL_HOST = "localhost"
+MYSQL_USER = "root"
+MYSQL_PASSWORD="Vongola75"
+MYSQL_DATABASE ="Pur_beurre"
 
-categories_to_display =[(None,"Pizzas"),(None,"volailles"),(None,"snacks"),(None,"desserts"),(None,"fromage"),(None,"petit-dejeuners"),(None,"epicerie"),(None,"produits-a-tartiner"),(None,"charcuteries")]
+CATEGORIES_TO_DISPLAY =[(None,"Pizzas"),(None,"volailles"),(None,"snacks"),(None,"desserts"),(None,"fromage"),(None,"petit-dejeuners"),(None,"epicerie"),(None,"produits-a-tartiner"),(None,"charcuteries")]
 
 with open(r"files\Category.sql","r") as file:
-    Category_table = file.read()
+    CATEGORY_TABLE = file.read()
 with open(r"files\Aliment.sql","r") as file:
-    Aliment_table =file.read()
+    ALIMENT_TABLE =file.read()
 with open(r"files\substitut.sql","r") as file:
-    Substitut_table =file.read()
+    SUBSTITUT_TABLE =file.read()
 with open(r"files\Favorite.sql","r") as file:
-    Favorite_table =file.read()
+    FAVORITE_TABLE =file.read()
 
 try :
     with open(r"files\aliment_status.txt","r") as file:
-        Aliment_status = file.read()
+        ALIMENT_STATUS = file.read()
 except:
-    pass
+        ALIMENT_STATUS = "Not Done"

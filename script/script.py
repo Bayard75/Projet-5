@@ -3,24 +3,26 @@ from prettytable import PrettyTable
 
 
 mydb = mysql.connector.connect( 
-    host =constants.mysql_host,
-    user = constants.mysql_user,
-    password=constants.mysql_password,
-    database =constants.mysql_database
+    host =constants.MYSQL_HOST,
+    user = constants.MYSQL_USER,
+    password=constants.MYSQL_PASSWORD,
+    database =constants.MYSQL_DATABASE
 )
+
 #Creating our cursor, tables, and inserting our data
 affichage_style = PrettyTable()
 
 mycursor= mydb.cursor()
-Pure_beurre = classes.Database(mydb,mycursor, constants.Category_table, constants.Aliment_table, constants.Substitut_table, constants.Favorite_table)
+Pure_beurre = classes.Database(mydb, mycursor, constants.CATEGORY_TABLE, constants.ALIMENT_TABLE, constants.SUBSTITUT_TABLE, constants.FAVORITE_TABLE)
 
 if Pure_beurre == 0:
-    quit
+    quit #If there's an error in the creation of our instance we stop
 
 print("***Tables created***.\n")
 
 Pure_beurre.insert_values_category()
-if constants.Aliment_status != "Done": #If the data hasn't been inserted we insert it
+
+if constants.ALIMENT_STATUS != "Done": #If the data hasn't been inserted we insert it
         Pure_beurre.insert_values_aliment() 
         Pure_beurre.alter_table_aliment()
     
@@ -67,30 +69,37 @@ while path !=3:
                         print("Veuillez rentrer un chiffre")
                         continue
                     result = Pure_beurre.show_substitut(choice_category,choice_aliment)
-                    if result == None:
+
+                    if result == 0:
                         print("Vous avez rentrez un chiffre qui n'est pas dans la catégorie.")
                         continue
-                    elif result != None:
+                   
+                    elif not result : #If the list is empty
+                        print("L'aliment choisie est déjà le meilleur de sa categorie.")
+                        break
+
+                    elif result :#if the list exists
                         print("Voici le meilleur substitut de l'aliment selectionné.")
                         affichage_style.field_names=["Numero","Nom","Category","Magasin","Nutriscore","Description","Lien"]
                         affichage_style.add_row((result[0]))
                         print(affichage_style)
                     
                         save = input("Souhaitez vous enregistrer ce resultat ou quitter le programme ?\n1- Sauvegarder\n2-Quitter\n")
-                    
-                    try:
-                        save= int(save)
-                    except ValueError:
-                        print("Saissiez 1 ou 2 s'il vous plait.")
-                        continue
-                    if save == 1 :
-                        Pure_beurre.add_favorite(result,choice_aliment) 
-                        print("Votre aliment a bien était sauvegardé !\n\n")
-                        break
-                    if save == 2:
-                        quit()
+                     
+                        try:
+                            save= int(save)
+                        except ValueError:
+                            print("Saissiez 1 ou 2 s'il vous plait.")
+                            continue
+                        if save == 1 :
+                            Pure_beurre.add_favorite(result,choice_aliment) 
+                            print("Votre aliment a bien était sauvegardé !\n\n")
+                            break
+                        if save == 2:
+                            quit()
                 break
         continue
+
     if path == 2:
         Pure_beurre.show_favorite()
 
