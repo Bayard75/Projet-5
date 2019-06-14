@@ -1,5 +1,5 @@
 # Projet-5
-Utilisation d'une API pour créer une base de données permetant la substitution d'aliments grâce à Pyrhon
+Utilisation d'une API pour créer une base de données permetant la substitution d'aliments grâce à Python
 =======
 Ce programme a pour but de reprondre à la demande suivante :
 
