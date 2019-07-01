@@ -1,4 +1,9 @@
-import os, mysql.connector, requests, json, constants, classes
+import os
+import mysql.connector
+import requests
+import json
+import constants
+import classes
 from prettytable import PrettyTable
 
 
