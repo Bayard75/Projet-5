@@ -7,34 +7,23 @@ import classes
 from prettytable import PrettyTable
 
 
-mydb = mysql.connector.connect(
-                            host=constants.MYSQL_HOST,
-                            user=constants.MYSQL_USER,
-                            password=constants.MYSQL_PASSWORD,
-                            database=constants.MYSQL_DATABASE
-                            )
-
 # Creating our cursor, tables, and inserting our data
 affichage_style = PrettyTable()
 
-mycursor = mydb.cursor()
-Pure_beurre = classes.Database(
-                            mydb, mycursor, constants.CATEGORY_TABLE,
-                            constants.ALIMENT_TABLE
-                            )
+Pur_beurre = classes.Database()
 
+print("***Creating Tables****")
 
-print("***Tables created***.\n")
+Category = classes.Category_table(constants.CATEGORY_TABLE)
+Aliment = classes.Aliment_table(constants.ALIMENT_TABLE)
+Substitut = classes.Substitut_table(constants.SUBSTITUT_TABLE)
 
-Pure_beurre.insert_values_category()
-
+Category.insert_values_category()
 if constants.ALIMENT_STATUS != "Done":  # We insert the data if neccesary
-    Pure_beurre.insert_values_aliment()
-    Pure_beurre.alter_table_aliment()
+    Aliment.insert_values_aliment()
+    Aliment.alter_table_aliment()
 
-print("***All data inserted***.\n")
-print("***Ready to begin***.\n")
-
+print("***All data inserted***.\n***Ready To Begin***\n")
 
 path = 0
 # The main part of our program
@@ -57,58 +46,73 @@ while path != 3:
         while True:  # Loop to make sure the category is chosen with an int
 
             print("Selectionnez la catégorie.")
-            Pure_beurre.show_categories()
+            Category.show_categories()
             choice_category = input()
             try:
                 choice_category = int(choice_category)
             except ValueError:
                 print("Veuillez rentrer un chiffre")
                 continue
+            if choice_category not in(range(1,10)):
+                print("Vous avez rentrer une categorie qui n'exite pas!")
+                continue
 
             while True:  # Loop to make sure the aliment is chosen with an int
 
                 print("Selectionnez l'aliment.")
-                Pure_beurre.show_aliments(choice_category)
-
+                Aliment.show_aliments(choice_category)
                 choice_aliment = input()
                 try:
                     choice_aliment = int(choice_aliment)
                 except ValueError:
                         print("Veuillez rentrer un chiffre")
                         continue
-                result = Pure_beurre.show_substitut(choice_category, choice_aliment)
-
-                if result == 0:
-                    print("Vous avez rentrez un chiffre qui n'est pas dans la catégorie.")
+                check = Aliment.check_pair(choice_category, choice_aliment) # We make sure that the category/aliment is compatible
+                if not check:
+                    print("L'aliment choisie n'est pas dans cette catégorie")
                     continue
+                else:
+                    result = Aliment.show_substitut(choice_category, choice_aliment)
 
-                elif not result:  # If the list is empty
+                if not result:  # If the list is empty
                     print("L'aliment choisie est déjà le meilleur de sa categorie.")
                     break
 
                 elif result:  # if the list exists
                     print("Voici le meilleur substitut de l'aliment selectionné.")
-                    affichage_style.field_names = ["Id", "Nom", "Category", "Magasin", "Nutriscore", "Description","Lien"]
-                    affichage_style.add_row((result[0]))
+                    affichage_style = PrettyTable()
+                    affichage_style.field_names = ["ID", "Nom",
+                                                   "Magasin", "Note",
+                                                   "Description", "Lien"]
+
+                    for item in result:
+                        affichage_style.add_row(item)
                     print(affichage_style)
 
-                    save = input("Souhaitez vous enregistrer ce resultat ou quitter le programme ?\n1- Sauvegarder\n2-Quitter\n")
-
-                    try:
-                        save= int(save)
-                    except ValueError:
-                        print("Saissiez 1 ou 2 s'il vous plait.")
-                        continue
+                    while True:  # To make sure we enter an int : either 1 or 2
+                        save = input("""Souhaitez vous enregistrer ce resultat
+                                    ou quitter le programme ?\n1- Sauvegarder\n2-Quitter\n""")
+                        try:
+                            save = int(save)
+                        except ValueError:
+                            print("Veuillez rentrer un chiffre")
+                            continue
+                        if save in (1, 2):
+                            break
+                        else:
+                            print("Saisissez 1 ou 2 s'il vous plaît : ")
+                            continue
 
                     if save == 1:
-                        Pure_beurre.add_favorite(result, choice_aliment) 
+                        Substitut.add_favorite(result, choice_aliment)
                         print("Votre aliment a bien était sauvegardé !\n\n")
-                        quit()
                     elif save == 2:
                         quit()
+                    break
                 break
-
+            break
     if path == 2:
-        Pure_beurre.show_favorite()
+        print("Voici vos substituts favoris !")
+        Substitut.show_favorite()
 
 os.system("pause")

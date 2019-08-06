@@ -12,35 +12,81 @@ from mysql.connector.errors import Error
 
 class Database():
 
-    def __init__(self, database, cursor, table1_formula, table2_formula):
-        """Class that creates 4 tables on initiation"""
-        self.database = database
-        self.cursor = cursor
+    def __init__(self):
+        """Class that creates a db named Pur_beurre"""
 
-        #  creating our two tables
+        self.database = mysql.connector.connect(
+                            host=constants.MYSQL_HOST,
+                            user=constants.MYSQL_USER,
+                            password=constants.MYSQL_PASSWORD)
+        self.cursor = self.database.cursor()
+
+        querry = """CREATE DATABASE IF NOT EXISTS pur_beurre"""
+        self.cursor.execute(querry)
+        querry = """USE pur_beurre"""
+        self.cursor.execute(querry)
+
+
+class Category_table(Database):
+
+    def __init__(self, formula):
+        """Class that creates a table for our categories
+            it takes one parameters the sql formula"""
+
+        Database.__init__(self)
+        self.category_formula = formula
+
         try:
-            self.cursor.execute(table1_formula)
-            self.cursor.execute(table2_formula)
+            self.cursor.execute(self.category_formula)
         except:
-            print("Erreur dans la creation des tables.")
-            quit()
+            print("""Une erreur s'est produite
+            dans la création de la table Category""")
 
     def insert_values_category(self):
-            """Method that inserts predefined categories into the category table"""
+            """Method that inserts predefined
+                categories into the category table"""
 
             # Inserting our first values into table1
             try:
-                sql_category_formula = "INSERT INTO Category(id_category,name_category) VALUES (%s,%s)"
+                sql_category_formula = """INSERT INTO Category(id_category,name_category)
+                                            VALUES (%s,%s)"""
                 self.cursor.executemany(sql_category_formula, constants.CATEGORIES_TO_DISPLAY)
                 self.database.commit()
                 return True
 
             except mysql.connector.Error as e:
-                if e.args[0] == 1062:
-                    return  # 1062 means that our values have already been inserted
-                else:
-                    print("Erreur dans l'insertion des données dans la table category. Erreur : ", e)
+                if e.args[0] == 1062:  # Data already inserted
                     return
+                else:
+                    print("""Erreur dans l'insertion des données
+                            dans la table category. Erreur : """, e)
+                    return
+
+    def show_categories(self):
+        affichage_style = PrettyTable()
+        affichage_style.field_names = ["Numero", "Nom"]
+
+        show_cat = "SELECT * FROM Category ORDER BY id_category"
+        self.cursor.execute(show_cat)
+        showing = self.cursor.fetchall()
+
+        for categories in showing:
+            affichage_style.add_row(categories)
+        print(affichage_style)
+
+
+class Aliment_table(Database):
+
+    def __init__(self, formula):
+
+        Database.__init__(self)
+        self.aliment_formula = formula
+
+        try:
+            self.cursor.execute(self.aliment_formula)
+        except:
+            print('''Une erreur s'est produite dans la
+            création de la table Aliment''')
 
     def insert_values_aliment(self):
         """Method that inserts our aliemnt into the aliment table
@@ -74,44 +120,34 @@ class Database():
             # Once inserted we create a file to keep track of that status
             file.write("Done")
 
-    def show_categories(self):
-        affichage_style = PrettyTable()
-        affichage_style.field_names = ["Numero", "Nom"]
-
-        show_cat = "SELECT * FROM Category ORDER BY id_category"
-        self.cursor.execute(show_cat)
-        showing = self.cursor.fetchall()
-
-        for categories in showing:
-            affichage_style.add_row(categories)
-        print(affichage_style)
-
     def alter_table_aliment(self):
-        """Method that deletes row where there is no grade, updates those were the store and description our unavailable,the re_increment our id_aliment"""
+        """Method that deletes row where there is no grade,
+         updates those where the store and description are unavailable,
+         and re-increment our id_aliment"""
 
-        sql_delete_empty = "DELETE FROM Aliment WHERE grade IN ('unknown','not-applicable')"
+        sql_delete_empty = """DELETE FROM Aliment
+        WHERE grade IN ('unknown','not-applicable')"""
         self.cursor.execute(sql_delete_empty)
         self.database.commit()
 
-        sql_update_store = "UPDATE Aliment SET store ='Non disponible' WHERE store =''"
-        sql_update_descri = "UPDATE Aliment set description ='Non disponible' WHERE description =''"
-        self.cursor.execute(sql_update_descri)
-        self.database.commit()
-        self.cursor.execute(sql_update_store)
+        sql_update_stores = """UPDATE Aliment
+                                SET store = 'Non disponible'
+                                WHERE store=''"""
+        self.cursor.execute(sql_update_stores)
         self.database.commit()
 
-        sql_increment = "SET @count=0"
-        self.cursor.execute(sql_increment)
-        sql_increment = "UPDATE Aliment SET id_aliment =@count:= @count+1"
-        self.cursor.execute(sql_increment)
+        sql_udpate_description = """UPDATE Aliment
+                                    SET description = 'Non disponible'
+                                    WHERE description='' """
+        self.cursor.execute(sql_udpate_description)
         self.database.commit()
 
     def show_aliments(self, choice_category):
         """Method that display the aliment chosen it takes 1 parametre : the category"""
 
         affichage_style = PrettyTable()
-        affichage_style.field_names =["Numero", "Nom"]
-        query = f"SELECT id_aliment,name_aliment FROM Aliment WHERE category = {choice_category}"
+        affichage_style.field_names = ["Numero", "Nom"]
+        query = f"""SELECT id_aliment,name_aliment FROM Aliment WHERE category = {choice_category}"""
 
         self.cursor.execute(query)
         result = self.cursor.fetchall()
@@ -119,6 +155,14 @@ class Database():
         for row in result:
             affichage_style.add_row(row)
         print(affichage_style)
+
+    def check_pair(self, choice_category, choice_aliment):
+        """This method checks that the aliment chosen if compatible with the category chosen"""
+
+        querry = f"""SELECT * from aliment WHERE category ={choice_category} AND id_aliment={choice_aliment}"""
+        self.cursor.execute(querry)
+        result = self.cursor.fetchall()
+        return result
 
     def show_substitut(self, choice_category, choice_aliment):
         """Method that selects a substitut
@@ -130,39 +174,55 @@ class Database():
 
         grade_min = self.cursor.fetchall()
 
-        querry_get_sub = f"""SELECT * FROM Aliment
+        querry_get_sub = f"""SELECT id_aliment, name_aliment,
+                            store, grade, description, link
+                            FROM Aliment
                             WHERE(category = {choice_category} 
                             AND id_aliment != {choice_aliment})
-                            AND grade ='{grade_min}' ORDER BY RAND() LIMIT 1"""
+                            AND grade ='{grade_min[0][0]}' ORDER BY RAND() LIMIT 1"""
 
         self.cursor.execute(querry_get_sub)
         result = self.cursor.fetchall()
         return result
 
-    def show_favorite(self):
 
-        affichage_style = PrettyTable()
-        affichage_style.field_names = ["Nom", "Substitut de", "Magasin", "Nutriscore", "Description", "Lien"]
+class Substitut_table(Database):
 
-        querry = "SELECT name_aliment,substitut_of, store, grade, description, link FROM Aliment WHERE favorite = 1"
-        self.cursor.execute(querry)
-        table = self.cursor.fetchall()
-        for item in table:
-            affichage_style.add_row(item)
-        print(affichage_style)
+    def __init__(self, formula):
+
+        Database.__init__(self)
+        self.substitut_formula = formula
+
+        try:
+            self.cursor.execute(self.substitut_formula)
+        except:
+            print("""" Une erreur s'est produite lors de la création
+            de la table substitut""")
 
     def add_favorite(self, result, choice_aliment):
 
         querry_get_name = f"""SELECT name_aliment
                             FROM Aliment
-                            WhERE id_aliment = {choice_aliment}"""
+                            WHERE id_aliment = {choice_aliment}"""
         self.cursor.execute(querry_get_name)
         name = self.cursor.fetchall()
 
-        querry_add_substitut_of = f"UPDATE Aliment SET substitut_of ='{name[0][0]}' WHERE name_aliment = '{result[0][0]}'"
-        self.cursor.execute(querry_add_substitut_of)
+        querry_add_sub = f'''INSERT INTO Sub(id_sub, is_sub_of)
+                            VALUES({result[0][0]}, "{name[0][0]}")'''
+        self.cursor.execute(querry_add_sub)
         self.database.commit()
 
-        querry_add_favorite = f"UPDATE Aliment SET favorite = 1 WHERE name_aliment = '{result[0][0]}'"
-        self.cursor.execute(querry_add_favorite)
-        self.database.commit()
+    def show_favorite(self):
+
+        sql = """select name_aliment, is_sub_of, store, grade, description, link
+                FROM Aliment INNER JOIN Sub ON Sub.id_sub = Aliment.id_aliment"""
+        self.cursor.execute(sql)
+        favorite = self.cursor.fetchall()
+
+        style = PrettyTable()
+        style.field_names = ["nom", "est le substitut de",
+                                "magasin", "note",
+                                "description", "Lien"]
+        for row in favorite:
+            style.add_row(row)
+            print(style)
