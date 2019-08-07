@@ -14,9 +14,9 @@ Pur_beurre = classes.Database()
 
 print("***Creating Tables****")
 
-Category = classes.Category_table(constants.CATEGORY_TABLE)
-Aliment = classes.Aliment_table(constants.ALIMENT_TABLE)
-Substitut = classes.Substitut_table(constants.SUBSTITUT_TABLE)
+category = classes.Category_table(constants.CATEGORY_TABLE)
+aliment = classes.Aliment_table(constants.ALIMENT_TABLE)
+substitut = classes.Substitut_table(constants.SUBSTITUT_TABLE)
 
 Category.insert_values_category()
 if constants.ALIMENT_STATUS != "Done":  # We insert the data if neccesary
@@ -46,7 +46,7 @@ while path != 3:
         while True:  # Loop to make sure the category is chosen with an int
 
             print("Selectionnez la catégorie.")
-            Category.show_categories()
+            category.show_categories()
             choice_category = input()
             try:
                 choice_category = int(choice_category)
@@ -60,19 +60,19 @@ while path != 3:
             while True:  # Loop to make sure the aliment is chosen with an int
 
                 print("Selectionnez l'aliment.")
-                Aliment.show_aliments(choice_category)
+                aliment.show_aliments(choice_category)
                 choice_aliment = input()
                 try:
                     choice_aliment = int(choice_aliment)
                 except ValueError:
                         print("Veuillez rentrer un chiffre")
                         continue
-                check = Aliment.check_pair(choice_category, choice_aliment) # We make sure that the category/aliment is compatible
+                check = aliment.check_pair(choice_category, choice_aliment) # We make sure that the category/aliment is compatible
                 if not check:
                     print("L'aliment choisie n'est pas dans cette catégorie")
                     continue
                 else:
-                    result = Aliment.show_substitut(choice_category, choice_aliment)
+                    result = aliment.show_substitut(choice_category, choice_aliment)
 
                 if not result:  # If the list is empty
                     print("L'aliment choisie est déjà le meilleur de sa categorie.")
@@ -103,7 +103,7 @@ while path != 3:
                             continue
 
                     if save == 1:
-                        Substitut.add_favorite(result, choice_aliment)
+                        substitut.add_favorite(result, choice_aliment)
                         print("Votre aliment a bien était sauvegardé !\n\n")
                     elif save == 2:
                         quit()
@@ -112,6 +112,6 @@ while path != 3:
             break
     if path == 2:
         print("Voici vos substituts favoris !")
-        Substitut.show_favorite()
+        substitut.show_favorite()
 
 os.system("pause")
