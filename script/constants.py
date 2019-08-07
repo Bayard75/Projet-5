@@ -12,9 +12,9 @@ path_files_aliment_status = os.path.join(path_files, 'aliment_status.txt')
 
 # The user only has to enter these 4 parameters before starting the program
 
-MYSQL_HOST = "localhost"
-MYSQL_USER = "root"
-MYSQL_PASSWORD = "Vongola75"
+MYSQL_HOST = ""
+MYSQL_USER = ""
+MYSQL_PASSWORD = ""
 # -------------------------------------------------------------------------
 
 CATEGORIES_TO_DISPLAY = [(None, "Pizzas"), (None, "volailles"),
