@@ -214,7 +214,7 @@ class Substitut_table(Database):
 
     def show_favorite(self):
 
-        sql = """select name_aliment, is_sub_of, store, grade, description, link
+        sql = """SELECT name_aliment, is_sub_of, store, grade, description, link
                 FROM Aliment INNER JOIN Sub ON Sub.id_sub = Aliment.id_aliment"""
         self.cursor.execute(sql)
         favorite = self.cursor.fetchall()
