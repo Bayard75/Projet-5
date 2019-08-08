@@ -10,7 +10,7 @@ from prettytable import PrettyTable
 # Creating our cursor, tables, and inserting our data
 affichage_style = PrettyTable()
 
-Pur_beurre = classes.Database()
+pur_beurre = classes.Database()
 
 print("***Creating Tables****")
 
@@ -31,7 +31,9 @@ while path != 3:
     print(
         "1- Quel aliment souhaitez-vous remplacer ?\n"
         "2- Retrouvez mes aliments substitués\n"
-        "3- Quitter")
+        "3- Quitter\n"
+        "4- Reinistialiser le programme")
+
     path = input()
     try:
         path = int(path)
@@ -39,7 +41,7 @@ while path != 3:
         print("La valeur saisie n'est pas un chifrre")
         continue
     if path not in (1, 2, 3):
-        print("Veuillez choisir entre 1 et 2 ou 3 pour quitter.")
+        print("Veuillez choisir entre 1 2 3 ou 4")
         continue
 
     if path == 1:
@@ -121,4 +123,9 @@ while path != 3:
         print("Voici vos substituts favoris !")
         substitut.show_favorite()
 
+    if path == 4:
+        pur_beurre.reset()
+        print("""Le programme a été reinistaliser !\n
+                Pour entammer une nouvelle session,
+                veuillez le relancer.""")
 os.system("pause")
