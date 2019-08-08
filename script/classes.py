@@ -9,7 +9,6 @@ import json
 from prettytable import PrettyTable
 from mysql.connector.errors import Error
 
-
 class Database():
 
     def __init__(self):
