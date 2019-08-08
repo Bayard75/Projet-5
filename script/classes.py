@@ -13,7 +13,7 @@ from mysql.connector.errors import Error
 class Database():
 
     def __init__(self):
-        """Class that creates a db named Pur_beurre"""
+        """Class that creates a db named pur_beurre"""
 
         self.database = mysql.connector.connect(
                             host=constants.MYSQL_HOST,
@@ -64,6 +64,9 @@ class Category_table(Database):
                     return
 
     def show_categories(self):
+        """Method that displays our categories
+        to the user"""
+
         affichage_style = PrettyTable()
         affichage_style.field_names = ["Numero", "Nom"]
 
@@ -79,6 +82,9 @@ class Category_table(Database):
 class Aliment_table(Database):
 
     def __init__(self, formula):
+        """Class that creates a table
+        for our aliment it takes one
+        parameter the sql formula"""
 
         Database.__init__(self)
         self.aliment_formula = formula
@@ -173,7 +179,7 @@ class Aliment_table(Database):
 
     def check_pair(self, choice_category, choice_aliment):
         """This method checks that the aliment
-            chosen if compatible with the category chosen"""
+            chosen is compatible with the category chosen"""
 
         querry = f"""SELECT * from aliment
                     WHERE category ={choice_category}
@@ -184,7 +190,7 @@ class Aliment_table(Database):
 
     def show_substitut(self, choice_category, choice_aliment):
         """Method that selects a substitut
-            based on and aliment id and a category id"""
+            based on a category id and an aliment id"""
 
         querry_get_min_grade = f"""SELECT MIN(grade) FROM Aliment
                             WHERE category ={choice_category}"""
@@ -208,6 +214,9 @@ class Aliment_table(Database):
 class Substitut_table(Database):
 
     def __init__(self, formula):
+        """Class that creates a table
+        for our substituts it takes one
+        parameter the sql formula"""
 
         Database.__init__(self)
         self.substitut_formula = formula
@@ -219,6 +228,10 @@ class Substitut_table(Database):
             de la table substitut""")
 
     def add_favorite(self, result, choice_aliment):
+        """Method which registers a substitut as favorite
+        it takes in the said substitut as an array
+        and the id_aliment of the aliment we chose
+        to substitut"""
 
         querry_get_name = f"""SELECT name_aliment
                             FROM Aliment
@@ -232,6 +245,8 @@ class Substitut_table(Database):
         self.database.commit()
 
     def show_favorite(self):
+        """Method that displays the favorites substituts
+        to the user"""
 
         sql = """SELECT name_aliment, is_sub_of, store, grade, description, link
                 FROM Aliment
