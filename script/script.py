@@ -40,8 +40,8 @@ while path != 3:
     except ValueError:
         print("La valeur saisie n'est pas un chifrre")
         continue
-    if path not in (1, 2, 3):
-        print("Veuillez choisir entre 1 2 3 ou 4")
+    if path not in (1, 2, 3, 4):
+        print("Veuillez choisir entre 1,2,3 ou 4")
         continue
 
     if path == 1:
@@ -125,7 +125,8 @@ while path != 3:
 
     if path == 4:
         pur_beurre.reset()
-        print("""Le programme a été reinistaliser !\n
-                Pour entammer une nouvelle session,
-                veuillez le relancer.""")
+        print("Le programme a été reinistaliser !\n"
+              "Pour entammer une nouvelle session,"
+              "veuillez le relancer.")
+        break
 os.system("pause")
