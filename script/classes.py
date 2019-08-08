@@ -50,7 +50,8 @@ class Category_table(Database):
             try:
                 sql_category_formula = """INSERT INTO Category(id_category,name_category)
                                             VALUES (%s,%s)"""
-                self.cursor.executemany(sql_category_formula, constants.CATEGORIES_TO_DISPLAY)
+                self.cursor.executemany(sql_category_formula,
+                                        constants.CATEGORIES_TO_DISPLAY)
                 self.database.commit()
                 return True
 
@@ -96,15 +97,23 @@ class Aliment_table(Database):
         for names in constants.CATEGORIES_TO_DISPLAY:
             # We get our aliment based on our categories
             for page in range(1, 4):
-                link = f"https://fr.openfoodfacts.org/categorie/{constants.CATEGORIES_TO_DISPLAY[id_category][1]}/{page}.json"
+                link = f"""https://fr.openfoodfacts.org/categorie/
+                        {constants.CATEGORIES_TO_DISPLAY[id_category][1]}
+                        /{page}.json"""
                 response = requests.get(link)
                 category_json = json.loads(response.text)
 
                 for products in category_json["products"]:
                     try:
-                        sql_formula_aliment = f"""INSERT IGNORE INTO Aliment(id_aliment,name_aliment,category,store,grade,description,link) VALUES (
-                            '{None}',"{products["product_name"]}",{id_category+1},"{products["stores"]}","{products["nutrition_grades_tags"][0]}",
-                            "{products["generic_name_fr"]}","{products["url"]}")"""
+                        sql_formula_aliment = f"""INSERT IGNORE INTO Aliment
+                                                (id_aliment,name_aliment,
+                                                category,store,grade,
+                                                description,link) VALUES (
+                                                '{None}',"{products["product_name"]}"
+                                                ,{id_category+1},"{products["stores"]}"
+                                                ,"{products["nutrition_grades_tags"][0]}",
+                                                "{products["generic_name_fr"]}",
+                                                "{products["url"]}")"""
 
                         self.cursor.execute(sql_formula_aliment)
 
@@ -121,7 +130,7 @@ class Aliment_table(Database):
             file.write("Done")
 
     def alter_table_aliment(self):
-        """Method that deletes row where there is no grade,
+        """Method that deletes rows where there is no grade,
          updates those where the store and description are unavailable,
          and re-increment our id_aliment"""
 
@@ -130,24 +139,30 @@ class Aliment_table(Database):
         self.cursor.execute(sql_delete_empty)
         self.database.commit()
 
-        sql_update_stores = """UPDATE Aliment
-                                SET store = 'Non disponible'
-                                WHERE store=''"""
-        self.cursor.execute(sql_update_stores)
-        self.database.commit()
+        sql_increment = "SET @count=0"
+        self.cursor.execute(sql_increment)
+        sql_increment = "UPDATE Aliment SET id_aliment =@count:= @count+1"
+        self.cursor.execute(sql_increment)
 
-        sql_udpate_description = """UPDATE Aliment
-                                    SET description = 'Non disponible'
-                                    WHERE description='' """
-        self.cursor.execute(sql_udpate_description)
+        sql_updates = """UPDATE Aliment
+                        SET store =CASE
+                        WHEN store='' THEN 'Non disponible'
+                        ELSE store END,
+                        description =CASE
+                        WHEN description='' THEN 'Non disponible'
+                        ELSE description END"""
+        self.cursor.execute(sql_updates)
         self.database.commit()
 
     def show_aliments(self, choice_category):
-        """Method that display the aliment chosen it takes 1 parametre : the category"""
+        """Method that display the aliment chosen
+            it takes the category as parameter"""
 
         affichage_style = PrettyTable()
         affichage_style.field_names = ["Numero", "Nom"]
-        query = f"""SELECT id_aliment,name_aliment FROM Aliment WHERE category = {choice_category}"""
+        query = f"""SELECT id_aliment,name_aliment
+                    FROM Aliment
+                    WHERE category = {choice_category}"""
 
         self.cursor.execute(query)
         result = self.cursor.fetchall()
@@ -157,9 +172,12 @@ class Aliment_table(Database):
         print(affichage_style)
 
     def check_pair(self, choice_category, choice_aliment):
-        """This method checks that the aliment chosen if compatible with the category chosen"""
+        """This method checks that the aliment
+            chosen if compatible with the category chosen"""
 
-        querry = f"""SELECT * from aliment WHERE category ={choice_category} AND id_aliment={choice_aliment}"""
+        querry = f"""SELECT * from aliment
+                    WHERE category ={choice_category}
+                    AND id_aliment={choice_aliment}"""
         self.cursor.execute(querry)
         result = self.cursor.fetchall()
         return result
@@ -177,9 +195,10 @@ class Aliment_table(Database):
         querry_get_sub = f"""SELECT id_aliment, name_aliment,
                             store, grade, description, link
                             FROM Aliment
-                            WHERE(category = {choice_category} 
+                            WHERE(category = {choice_category}
                             AND id_aliment != {choice_aliment})
-                            AND grade ='{grade_min[0][0]}' ORDER BY RAND() LIMIT 1"""
+                            AND grade ='{grade_min[0][0]}'
+                            ORDER BY RAND() LIMIT 1"""
 
         self.cursor.execute(querry_get_sub)
         result = self.cursor.fetchall()
@@ -215,14 +234,15 @@ class Substitut_table(Database):
     def show_favorite(self):
 
         sql = """SELECT name_aliment, is_sub_of, store, grade, description, link
-                FROM Aliment INNER JOIN Sub ON Sub.id_sub = Aliment.id_aliment"""
+                FROM Aliment
+                INNER JOIN Sub ON Sub.id_sub = Aliment.id_aliment"""
         self.cursor.execute(sql)
         favorite = self.cursor.fetchall()
 
         style = PrettyTable()
         style.field_names = ["nom", "est le substitut de",
-                                "magasin", "note",
-                                "description", "Lien"]
+                             "magasin", "note",
+                             "description", "Lien"]
         for row in favorite:
             style.add_row(row)
             print(style)

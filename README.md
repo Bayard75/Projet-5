@@ -63,7 +63,7 @@ MYSQL_PASSWORD = "    "
 =======
 Retour à votre prompt pour lancer le programme rentrer la ligne suivante:
 ```
-script\script.py
+python script\script.py
 ```
 Enjoy !
 

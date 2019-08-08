@@ -18,10 +18,10 @@ category = classes.Category_table(constants.CATEGORY_TABLE)
 aliment = classes.Aliment_table(constants.ALIMENT_TABLE)
 substitut = classes.Substitut_table(constants.SUBSTITUT_TABLE)
 
-Category.insert_values_category()
+category.insert_values_category()
 if constants.ALIMENT_STATUS != "Done":  # We insert the data if neccesary
-    Aliment.insert_values_aliment()
-    Aliment.alter_table_aliment()
+    aliment.insert_values_aliment()
+    aliment.alter_table_aliment()
 
 print("***All data inserted***.\n***Ready To Begin***\n")
 
@@ -53,7 +53,7 @@ while path != 3:
             except ValueError:
                 print("Veuillez rentrer un chiffre")
                 continue
-            if choice_category not in(range(1,10)):
+            if choice_category not in(range(1, 10)):
                 print("Vous avez rentrer une categorie qui n'exite pas!")
                 continue
 
@@ -67,19 +67,23 @@ while path != 3:
                 except ValueError:
                         print("Veuillez rentrer un chiffre")
                         continue
-                check = aliment.check_pair(choice_category, choice_aliment) # We make sure that the category/aliment is compatible
+                check = aliment.check_pair(choice_category, choice_aliment)
+                # We make sure that the category/aliment is compatible
                 if not check:
                     print("L'aliment choisie n'est pas dans cette catégorie")
                     continue
                 else:
-                    result = aliment.show_substitut(choice_category, choice_aliment)
+                    result = aliment.show_substitut(choice_category,
+                                                    choice_aliment)
 
                 if not result:  # If the list is empty
-                    print("L'aliment choisie est déjà le meilleur de sa categorie.")
+                    print("""L'aliment choisie est
+                            déjà le meilleur de sa categorie.""")
                     break
 
                 elif result:  # if the list exists
-                    print("Voici le meilleur substitut de l'aliment selectionné.")
+                    print("""Voici le meilleur substitut
+                            de l'aliment selectionné.""")
                     affichage_style = PrettyTable()
                     affichage_style.field_names = ["ID", "Nom",
                                                    "Magasin", "Note",
@@ -90,7 +94,10 @@ while path != 3:
                     print(affichage_style)
 
                     while True:  # To make sure we enter an int : either 1 or 2
-                        save = input("""Souhaitez vous enregistrer ce resultat ou quitter le programme ?\n1- Sauvegarder\n2-Quitter\n""")
+                        print("""Souhaitez vous enregistrer ce resultat
+                                ou quitter le programme ?
+                                \n1- Sauvegarder\n2-Quitter\n""")
+                        save = input()
                         try:
                             save = int(save)
                         except ValueError:
