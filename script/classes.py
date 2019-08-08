@@ -26,6 +26,14 @@ class Database():
         querry = """USE pur_beurre"""
         self.cursor.execute(querry)
 
+    def reset(self):
+        """Method that reset all of our database"""
+
+        sql_drop_all = "DROP Database pur_beurre"
+        self.cursor.execute(sql_drop_all)
+
+        os.remove(constants.path_files_aliment_status)
+
 
 class Category_table(Database):
 
