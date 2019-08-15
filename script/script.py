@@ -32,7 +32,7 @@ while path != 3:
         "1- Quel aliment souhaitez-vous remplacer ?\n"
         "2- Retrouvez mes aliments substitués\n"
         "3- Quitter\n"
-        "4- Reinistialiser le programme")
+        "4- Réinitialiser le programme")
 
     path = input()
     try:
@@ -96,9 +96,9 @@ while path != 3:
                     print(affichage_style)
 
                     while True:  # To make sure we enter an int : either 1 or 2
-                        print("""Souhaitez vous enregistrer ce resultat
-                                ou quitter le programme ?
-                                \n1- Sauvegarder\n2-Quitter\n""")
+                        print("Souhaitez vous enregistrer ce resultat"
+                                "ou quitter le programme ?"
+                                "\n1- Sauvegarder\n2-Quitter\n")
                         save = input()
                         try:
                             save = int(save)
