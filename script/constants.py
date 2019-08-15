@@ -24,13 +24,6 @@ CATEGORIES_TO_DISPLAY = [(None, "Pizzas"), (None, "volailles"),
                          (None, "charcuteries")]
 # -------------------------------------------------------------------------
 
-with open(path_files_category, "r") as file:
-    CATEGORY_TABLE = file.read()
-with open(path_files_Aliment, "r") as file:
-    ALIMENT_TABLE = file.read()
-with open(path_files_Substitut, "r") as file:
-    SUBSTITUT_TABLE = file.read()
-
 try:
     with open(path_files_aliment_status, "r") as file:
         ALIMENT_STATUS = file.read()

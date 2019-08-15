@@ -83,7 +83,7 @@ while path != 3:
                             déjà le meilleur de sa categorie.""")
                     break
 
-                elif result:  # if the list exists
+                else:  # if the list exists
                     print("""Voici le meilleur substitut
                             de l'aliment selectionné.""")
                     affichage_style = PrettyTable()

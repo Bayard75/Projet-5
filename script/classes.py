@@ -37,12 +37,13 @@ class Database():
 
 class Category_table(Database):
 
-    def __init__(self, formula):
-        """Class that creates a table for our categories
-            it takes one parameters the sql formula"""
+    def __init__(self):
+        """Class that creates a table for our categories"""
 
         Database.__init__(self)
-        self.category_formula = formula
+        with open(constants.path_files_category, "r") as file:
+            CATEGORY_TABLE = file.read()
+        self.category_formula = CATEGORY_TABLE
 
         try:
             self.cursor.execute(self.category_formula)
@@ -91,11 +92,12 @@ class Aliment_table(Database):
 
     def __init__(self, formula):
         """Class that creates a table
-        for our aliment it takes one
-        parameter the sql formula"""
+        for our aliment"""
 
         Database.__init__(self)
-        self.aliment_formula = formula
+        with open(constants.path_files_Aliment, "r") as file:
+            ALIMENT_TABLE = file.read()
+        self.aliment_formula = ALIMENT_TABLE
 
         try:
             self.cursor.execute(self.aliment_formula)
@@ -221,13 +223,14 @@ class Aliment_table(Database):
 
 class Substitut_table(Database):
 
-    def __init__(self, formula):
+    def __init__(self):
         """Class that creates a table
-        for our substituts it takes one
-        parameter the sql formula"""
+        for our substituts"""
 
         Database.__init__(self)
-        self.substitut_formula = formula
+        with open(constants.path_files_Substitut, "r") as file:
+            SUBSTITUT_TABLE = file.read()
+        self.substitut_formula = SUBSTITUT_TABLE
 
         try:
             self.cursor.execute(self.substitut_formula)
