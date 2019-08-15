@@ -14,9 +14,9 @@ pur_beurre = classes.Database()
 
 print("***Creating Tables****")
 
-category = classes.Category_table(constants.CATEGORY_TABLE)
-aliment = classes.Aliment_table(constants.ALIMENT_TABLE)
-substitut = classes.Substitut_table(constants.SUBSTITUT_TABLE)
+category = classes.Category_table()
+aliment = classes.Aliment_table()
+substitut = classes.Substitut_table()
 
 category.insert_values_category()
 if constants.ALIMENT_STATUS != "Done":  # We insert the data if neccesary
