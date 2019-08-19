@@ -198,22 +198,21 @@ class Aliment_table(Database):
         result = self.cursor.fetchall()
         return result
 
-    def show_substitut(self, choice_category, choice_aliment):
+    def show_better(self, choice_category, choice_aliment):
         """Method that selects a substitut
             based on a category id and an aliment id"""
 
-        querry_get_min_grade = f"""SELECT MIN(grade) FROM Aliment
-                            WHERE category ={choice_category}"""
+        querry_get_min_grade = f"""SELECT grade FROM Aliment
+                            WHERE id_aliment ={choice_aliment}"""
         self.cursor.execute(querry_get_min_grade)
 
-        grade_min = self.cursor.fetchall()
+        grade_aliment = self.cursor.fetchall()
 
         querry_get_sub = f"""SELECT id_aliment, name_aliment,
                             store, grade, description, link
                             FROM Aliment
                             WHERE(category = {choice_category}
-                            AND id_aliment != {choice_aliment})
-                            AND grade ='{grade_min[0][0]}'
+                            AND grade < {grade_aliment})
                             ORDER BY RAND() LIMIT 1"""
 
         self.cursor.execute(querry_get_sub)
