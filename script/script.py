@@ -75,7 +75,7 @@ while path != 3:
                     print("L'aliment choisie n'est pas dans cette catégorie")
                     continue
                 else:
-                    result = aliment.show_substitut(choice_category,
+                    result = aliment.show_better(choice_category,
                                                     choice_aliment)
 
                 if not result:  # If the list is empty
