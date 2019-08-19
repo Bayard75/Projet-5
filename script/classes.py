@@ -90,7 +90,7 @@ class Category_table(Database):
 
 class Aliment_table(Database):
 
-    def __init__(self, formula):
+    def __init__(self):
         """Class that creates a table
         for our aliment"""
 
