@@ -206,13 +206,12 @@ class Aliment_table(Database):
                             WHERE id_aliment ={choice_aliment}"""
         self.cursor.execute(querry_get_min_grade)
 
-        grade_aliment = self.cursor.fetchall()
-
+        grade_aliment = self.cursor.fetchone()
         querry_get_sub = f"""SELECT id_aliment, name_aliment,
                             store, grade, description, link
                             FROM Aliment
                             WHERE(category = {choice_category}
-                            AND grade < {grade_aliment})
+                            AND grade < '{grade_aliment[0]}')
                             ORDER BY RAND() LIMIT 1"""
 
         self.cursor.execute(querry_get_sub)

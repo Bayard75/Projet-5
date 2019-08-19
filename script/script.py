@@ -125,7 +125,7 @@ while path != 3:
 
     if path == 4:
         pur_beurre.reset()
-        print("Le programme a été reinistaliser !\n"
+        print("Le programme a été reinistalisé !\n"
               "Pour entammer une nouvelle session,"
               "veuillez le relancer.")
         break
