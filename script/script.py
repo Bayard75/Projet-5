@@ -76,7 +76,7 @@ while path != 3:
                     continue
                 else:
                     result = aliment.show_better(choice_category,
-                                                    choice_aliment)
+                                                choice_aliment)
 
                 if not result:  # If the list is empty
                     print("""L'aliment choisie est
