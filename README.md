@@ -32,7 +32,7 @@ https://openclassrooms.com/fr/courses/1959476-administrez-vos-bases-de-donnees-a
 ##Prérequis
 =======
 
-Pour faire fonctionner ce programme il vous aussi faudra installer un environnement virtuel.
+Pour faire fonctionner ce programme il vous faudra installer un environnement virtuel.
 Pour cela il faudra taper les lignes suivantes dans votre **prompt**
 ```
 cd Chemin\vers\le\dossier
@@ -51,7 +51,7 @@ pip install -r requirements.txt
 
 ##Renseignez vos informations
 =======
-Maintenant que vous avez tous installé il ne vous reste plus qu'à ouvrir le fichier **constants.py** avec votre editeur de texte préferer (bloc notes marche très bien) et à remplir les lignes suivantes:
+Maintenant que vous avez tout installé il ne vous reste plus qu'à ouvrir le fichier **constants.py** avec votre editeur de texte préferé (bloc notes marche très bien) et à remplir les lignes suivantes:
 ```
 MYSQL_HOST = "    "
 MYSQL_USER = "    "
@@ -61,7 +61,7 @@ MYSQL_PASSWORD = "    "
 
 ##Lancement du programme
 =======
-Retour à votre prompt pour lancer le programme rentrer la ligne suivante:
+Retour à votre prompt pour lancer le programme rentré la ligne suivante:
 ```
 python script\script.py
 ```
