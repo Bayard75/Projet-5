@@ -79,13 +79,13 @@ while path != 3:
                                                  choice_aliment)
 
                 if not result:  # If the list is empty
-                    print("""L'aliment choisie est
-                            déjà le meilleur de sa categorie.""")
+                    print("""L'aliment choisie est"""
+                          """déjà l'un des meilleur de sa categorie.""")
                     break
 
                 else:  # if the list exists
-                    print("""Voici le meilleur substitut
-                            de l'aliment selectionné.""")
+                    print("""Voici un substitut"""
+                          """de l'aliment selectionné.""")
                     affichage_style = PrettyTable()
                     affichage_style.field_names = ["ID", "Nom",
                                                    "Magasin", "Note",
@@ -97,8 +97,8 @@ while path != 3:
 
                     while True:  # To make sure we enter an int : either 1 or 2
                         print("Souhaitez vous enregistrer ce resultat"
-                                "ou quitter le programme ?"
-                                "\n1- Sauvegarder\n2-Quitter\n")
+                              "ou quitter le programme ?"
+                              "\n1- Sauvegarder\n2-Quitter\n")
                         save = input()
                         try:
                             save = int(save)
