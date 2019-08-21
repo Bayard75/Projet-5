@@ -96,7 +96,7 @@ while path != 3:
                     print(affichage_style)
 
                     while True:  # To make sure we enter an int : either 1 or 2
-                        print("Souhaitez vous enregistrer ce resultat"
+                        print("Souhaitez vous enregistrer ce resultat "
                               "ou quitter le programme ?"
                               "\n1- Sauvegarder\n2-Quitter\n")
                         save = input()
