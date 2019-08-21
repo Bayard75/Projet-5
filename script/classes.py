@@ -29,9 +29,26 @@ class Database():
     def reset(self):
         """Method that reset all of our database"""
 
-        sql_drop_all = "DROP Database pur_beurre"
-        self.cursor.execute(sql_drop_all)
+        # First we need to get all our process ids
+        sql_get_pids = """SELECT id FROM information_schema.processlist
+                         WHERE db='pur_beurre' AND command='Sleep' """
 
+        self.cursor.execute(sql_get_pids)
+        array = self.cursor.fetchall()
+        pids = []
+        for i in array:
+            pids.append(i[0])
+        pids.sort(reverse=True)
+        # We putting them into a reverse list so that the bigger number
+        # Is the one killed first to avoid disconnection with the db
+        
+        for ids in pids:
+            sql_kill_pid = f"KILL {ids}"
+            self.cursor.execute(sql_kill_pid)
+        
+        # We can now drop our database and avoid the metadata lock
+        sql_drop_all ="DROP DATABASE pur_beurre"
+        self.cursor.execute(sql_drop_all)
         os.remove(constants.path_files_aliment_status)
 
 
@@ -262,11 +279,10 @@ class Substitut_table(Database):
                 INNER JOIN Sub ON Sub.id_sub = Aliment.id_aliment"""
         self.cursor.execute(sql)
         favorite = self.cursor.fetchall()
-
         style = PrettyTable()
         style.field_names = ["nom", "est le substitut de",
                              "magasin", "note",
                              "description", "Lien"]
         for row in favorite:
             style.add_row(row)
-            print(style)
+        print(style)
