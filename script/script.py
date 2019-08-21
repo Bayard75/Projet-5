@@ -56,7 +56,7 @@ while path != 3:
                 print("Veuillez rentrer un chiffre")
                 continue
             if choice_category not in(range(1, 10)):
-                print("Vous avez rentrer une categorie qui n'exite pas!")
+                print("Vous avez rentré une categorie qui n'exite pas!")
                 continue
 
             while True:  # Loop to make sure the aliment is chosen with an int
